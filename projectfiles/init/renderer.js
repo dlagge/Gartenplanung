@@ -9,6 +9,10 @@ export class Renderer {
         document.body.appendChild(this.renderer.domElement);
     }
 
+    getRenderer() {
+        return this.renderer;
+    }
+
     rend(scene, camera) {
         this.renderer.render(scene, camera);
     }
