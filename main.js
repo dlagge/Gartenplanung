@@ -7,6 +7,8 @@ import { Controls } from './projectfiles/init/controls';
 import { Lights } from './projectfiles/garden/lights';
 import { Geometry } from './projectfiles/garden/geometry';
 import { Model } from './projectfiles/garden/model';
+import { PopupButton } from './projectfiles/garden/popup_button';
+import { PopupWindow } from "./projectfiles/garden/popup_window";
 
 
 //----------------------- Variablen -----------------------//
@@ -16,18 +18,25 @@ let groundcolor = 0xedae87;
 let selectorcolor = 0xf2f0f0;
 let ground_width = 150;
 let ground_length = 150;
-let selector_width = 5;
-let selector_length = 5;
+let floorvecSelector = new THREE.Vector3(0, 0.5, 0);
 let camera, scene, renderer, ground, controls, lights, model, mesh, raycaster, pointer, hoverselector;
 let objects = [];
 
 
 //----------------------- Funktionsaufrufe -----------------------//
 
+createPopup();
 init();
 createGarden();
 
 //----------------------- Funktionen -----------------------//
+
+function createPopup() {
+    let popupButton = new PopupButton();
+    popupButton.createButton();
+    let popup = new PopupWindow();
+    popup.createPopup();
+}
 
 // Erstellt: Kamera, Szene, Renderer, Bewegungskontroller
 function init() {
@@ -43,7 +52,7 @@ function createGarden() {
     ground = new Geometry(groundcolor);
     ground.createPlane(ground_width, ground_length);
     hoverselector = new Geometry(selectorcolor);
-    hoverselector.createSelector(selector_width, selector_length);
+    hoverselector.createSelector();
     raycaster = new THREE.Raycaster();
     pointer = new THREE.Vector2();
 
@@ -66,6 +75,7 @@ function createGarden() {
     // listeners
     document.addEventListener('pointermove', onPointerMove);
     document.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener( 'resize', onWindowResize, false );
 
     animate();
 }
@@ -79,7 +89,7 @@ function onPointerMove(event) {
         const intersect = intersects[0];
 
         // Model auf dem Boden anzeigen
-        hoverselector.getSelector().position.copy(intersect.point).add(intersect.face.normal);
+        hoverselector.getSelector().position.copy(intersect.point).add(intersect.face.normal).add(floorvecSelector);
         mesh.position.copy(intersect.point).add(intersect.face.normal);
     }
 }
@@ -108,6 +118,15 @@ function onPointerDown(event) {
             });
         }
     }
+}
+
+function onWindowResize(){
+
+    camera.getCamera().aspect = window.innerWidth / window.innerHeight;
+    camera.getCamera().updateProjectionMatrix();
+
+    renderer.getRenderer().setSize( window.innerWidth, window.innerHeight );
+
 }
 
 function animate() {

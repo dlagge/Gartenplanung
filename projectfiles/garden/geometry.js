@@ -15,10 +15,10 @@ export class Geometry {
         return this.plane;
     }
 
-    createSelector(width, length) {
-        let selectorGeo = new THREE.BoxGeometry(width, 0, length);
-        let edges = new THREE.EdgesGeometry(selectorGeo);
-        this.selectorMesh = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: this.geometryColor }));
+    createSelector() {
+        let selectorGeo = new THREE.CylinderGeometry( 3, 3, 0.1, 50 ); 
+        let material = new THREE.MeshBasicMaterial( {color: 0xb3847a} ); 
+        this.selectorMesh = new THREE.Mesh( selectorGeo, material );
     }
 
     getSelector() {
