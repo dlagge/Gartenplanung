@@ -76,8 +76,20 @@ export class PopupWindow {
     createSearch() {
         this.search = document.createElement('input');
         this.search.setAttribute('type', 'text');
-        this.popupWindow.appendChild(this.search);
+        this.search.style.borderRadius = '5px';
+        this.search.style.borderColor = '#b4dbff';
+        this.search.style.borderStyle = 'solid';
+        this.search.style.outline = 'none';
+        this.search.style.width = '70%';
+        this.search.style.height = '2rem';
+        this.search.onfocus = function () {
+            this.style.borderColor = '#fff'; 
+        };
+        this.search.onblur = function () {
+            this.style.borderColor = '#b4dbff'; 
+        };
 
+        this.popupWindow.appendChild(this.search);
     }
 
 }
