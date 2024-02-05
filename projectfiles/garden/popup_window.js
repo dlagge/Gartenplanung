@@ -1,57 +1,66 @@
 export class PopupWindow {
 
     createPopup() {
-        let popupWindow = document.createElement('div');
-        popupWindow.setAttribute('id', 'popupWindow');
-        popupWindow.style.display = 'none';
-        popupWindow.style.position = 'absolute';
-        popupWindow.style.padding = '1rem';
-        popupWindow.style.paddingTop = '0.1rem';
-        popupWindow.style.backgroundColor = '#f7f7f7';
+        this.createWindowStyle();
+        this.createCloseButtonStyle();
+        this.createTitle();
+        this.createSearch();
+    }
+
+    createWindowStyle() {
+        this.popupWindow = document.createElement('div');
+        this.popupWindow.setAttribute('id', 'popupWindow');
+        this.popupWindow.style.display = 'none';
+        this.popupWindow.style.position = 'absolute';
+        this.popupWindow.style.padding = '1rem';
+        this.popupWindow.style.paddingTop = '0.1rem';
+        this.popupWindow.style.backgroundColor = '#f7f7f7';
 
         // Test ob die Webseite auf dem Smartphone angeschaut wird oder nicht
         if (typeof screen.orientation === 'undefined') {
-            popupWindow.style.left = '0%';
-            popupWindow.style.top = '0%';
-            popupWindow.style.height = '100%';
-            popupWindow.style.width = '100%';
+            this.popupWindow.style.left = '0%';
+            this.popupWindow.style.top = '0%';
+            this.popupWindow.style.height = '100%';
+            this.popupWindow.style.width = '100%';
 
         } else {
-            popupWindow.style.setProperty("-webkit-filter", "drop-shadow(2px 2px 2px #b3847a)");
-            popupWindow.style.borderRadius = '2%';
-            popupWindow.style.left = '32.5%';
-            popupWindow.style.top = '20%';
-            popupWindow.style.height = '50%';
-            popupWindow.style.width = '35%';
+            this.popupWindow.style.setProperty("-webkit-filter", "drop-shadow(2px 2px 2px #b3847a)");
+            this.popupWindow.style.borderRadius = '2%';
+            this.popupWindow.style.left = '32.5%';
+            this.popupWindow.style.top = '20%';
+            this.popupWindow.style.height = '50%';
+            this.popupWindow.style.width = '35%';
         }
+    }
 
-        let closeButton = document.createElement('button');
-        closeButton.style.position = 'absolute';
-        closeButton.style.right = '0.8rem';
-        closeButton.style.top = '0.8rem';
-        closeButton.style.height = '2.8rem';
-        closeButton.style.width = '2.8rem';
-        closeButton.style.borderRadius = '50%';
-        closeButton.style.border = 'none';
-        closeButton.style.background = '#b4dbff';
-        closeButton.style.cursor = "pointer";
-        closeButton.innerHTML = '<img src="./images/plus.png" style="width:1.6rem; margin-top:0.2rem; transform:rotate(45deg);" />';
-        closeButton.onmouseover = function () {
+    createCloseButtonStyle() {
+        this.closeButton = document.createElement('button');
+        this.closeButton.style.position = 'absolute';
+        this.closeButton.style.right = '0.8rem';
+        this.closeButton.style.top = '0.8rem';
+        this.closeButton.style.height = '2.8rem';
+        this.closeButton.style.width = '2.8rem';
+        this.closeButton.style.borderRadius = '50%';
+        this.closeButton.style.border = 'none';
+        this.closeButton.style.background = '#b4dbff';
+        this.closeButton.style.cursor = "pointer";
+        this.closeButton.innerHTML = '<img src="./images/plus.png" style="width:1.6rem; margin-top:0.2rem; transform:rotate(45deg);" />';
+        this.closeButton.onmouseover = function () {
             this.style.background = '#b3847a';
             this.style.transition = '1s';
         };
-        closeButton.onmouseout = function () {
+        this.closeButton.onmouseout = function () {
             this.style.background = '#b4dbff';
         };
-        closeButton.onclick = function () {
+        this.closeButton.onclick = function () {
             document.getElementById('popupButton').style.display = 'block';
             document.getElementById('popupWindow').style.display = 'none';
         };
 
-        popupWindow.appendChild(closeButton);
+        this.popupWindow.appendChild(this.closeButton);
+    }
 
-
-        // h1 Titel
+    createTitle() {
         let h1 = document.createElement("h1");
         h1.style.color = '#707070';
         h1.style.fontFamily = 'Arial';
@@ -60,8 +69,15 @@ export class PopupWindow {
 
         let textNode = document.createTextNode("Pflanze hinzufügen");
         h1.appendChild(textNode);
-        popupWindow.appendChild(h1);
-        document.body.appendChild(popupWindow);
+        this.popupWindow.appendChild(h1);
+        document.body.appendChild(this.popupWindow);
+    }
+
+    createSearch() {
+        this.search = document.createElement('input');
+        this.search.setAttribute('type', 'text');
+        this.popupWindow.appendChild(this.search);
+
     }
 
 }

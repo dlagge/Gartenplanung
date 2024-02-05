@@ -12,8 +12,4 @@ export class Renderer {
     getRenderer() {
         return this.renderer;
     }
-
-    rend(scene, camera) {
-        this.renderer.render(scene, camera);
-    }
 }

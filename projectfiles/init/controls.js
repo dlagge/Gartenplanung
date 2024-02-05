@@ -15,8 +15,4 @@ export class Controls {
         this.controls.zoomSpeed = 2;
         this.controls.rotateSpeed = 0.5;
     }
-
-    getControls() {
-        return this.controls;
-    }
 }

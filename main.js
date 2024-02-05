@@ -31,19 +31,20 @@ createGarden();
 
 //----------------------- Funktionen -----------------------//
 
-function createPopup() {
-    let popupButton = new PopupButton();
-    popupButton.createButton();
-    let popup = new PopupWindow();
-    popup.createPopup();
-}
-
 // Erstellt: Kamera, Szene, Renderer, Bewegungskontroller
 function init() {
     camera = new Camera();
     scene = new Scene(skycolor);
     renderer = new Renderer();
     controls = new Controls(camera.getCamera(), renderer.getRenderer().domElement);
+}
+
+// Erstellt: Das Popup mit dem Popup Button, welches das Popup öffnet
+function createPopup() {
+    let popupButton = new PopupButton();
+    popupButton.getButton();
+    let popup = new PopupWindow();
+    popup.createPopup();
 }
 
 // Erstellt: Licht, Boden, Modelle
@@ -64,8 +65,7 @@ function createGarden() {
 
     scene.getScene().add(
         ground.getPlane(),
-        lights.getHemiLight(),
-        lights.geAmbientLight(),
+        lights.getAmbientLight(),
         lights.getDirLight(),
         hoverselector.getSelector()
     );
@@ -80,6 +80,8 @@ function createGarden() {
     animate();
 }
 
+// Der Raycaster baut ein Mapping zwischen Mauszeiger und Position auf der Gartenfläche auf.
+// Während dem Hovering wird das Objekt mit runder Schattenfläche angezeigt
 function onPointerMove(event) {
     pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
     raycaster.setFromCamera(pointer, camera.getCamera());
@@ -94,6 +96,7 @@ function onPointerMove(event) {
     }
 }
 
+// Objekte werden auf die Gartenfläche gesetzt, wenn es einen Linksmausklick gibt
 function onPointerDown(event) {
     pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
     raycaster.setFromCamera(pointer, camera.getCamera());
@@ -121,12 +124,9 @@ function onPointerDown(event) {
 }
 
 function onWindowResize(){
-
     camera.getCamera().aspect = window.innerWidth / window.innerHeight;
     camera.getCamera().updateProjectionMatrix();
-
-    renderer.getRenderer().setSize( window.innerWidth, window.innerHeight );
-
+    renderer.getRenderer().setSize(window.innerWidth, window.innerHeight);
 }
 
 function animate() {
@@ -135,6 +135,6 @@ function animate() {
 }
 
 function render() {
-    renderer.rend(scene.getScene(), camera.getCamera());
+    renderer.getRenderer().render(scene.getScene(), camera.getCamera());
 }
 

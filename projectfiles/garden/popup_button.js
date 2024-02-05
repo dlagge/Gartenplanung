@@ -1,30 +1,38 @@
 export class PopupButton {
+    constructor() {
+        this.createButton();
+    }
+
     createButton() {
-        let popupButton = document.createElement('button');
-        popupButton.setAttribute("id", "popupButton");
-        popupButton.style.position = 'absolute';
-        popupButton.style.left = '5rem';
-        popupButton.style.top = '5rem';
-        popupButton.style.height = '5.5rem';
-        popupButton.style.width = '5.5rem';
-        popupButton.style.borderRadius = '50%';
-        popupButton.style.borderWidth = '0.35rem';
-        popupButton.style.borderColor = 'white';
-        popupButton.style.borderStyle = 'solid';
-        popupButton.style.background = 'none';
-        popupButton.style.cursor = "pointer";
-        popupButton.innerHTML = '<img src="./images/plus.png" style="width:3rem; margin-top:0.3rem" />';
-        document.body.appendChild(popupButton);
-        popupButton.onmouseover = function() {
+        this.popupButton = document.createElement('button');
+        this.popupButton.setAttribute("id", "popupButton");
+        this.popupButton.style.position = 'absolute';
+        this.popupButton.style.left = '5rem';
+        this.popupButton.style.top = '5rem';
+        this.popupButton.style.height = '5.5rem';
+        this.popupButton.style.width = '5.5rem';
+        this.popupButton.style.borderRadius = '50%';
+        this.popupButton.style.borderWidth = '0.35rem';
+        this.popupButton.style.borderColor = 'white';
+        this.popupButton.style.borderStyle = 'solid';
+        this.popupButton.style.background = 'none';
+        this.popupButton.style.cursor = "pointer";
+        this.popupButton.innerHTML = '<img src="./images/plus.png" style="width:3rem; margin-top:0.3rem" />';
+        document.body.appendChild(this.popupButton);
+        this.popupButton.onmouseover = function() {
             this.style.transform = 'rotate(45deg)';
             this.style.transition = '1s';
         };
-        popupButton.onmouseout = function() {
+        this.popupButton.onmouseout = function() {
             this.style.transform = 'rotate(0deg)';
         };
-        popupButton.onclick = function() {
+        this.popupButton.onclick = function() {
             this.style.display = 'none';
             document.getElementById('popupWindow').style.display = 'block';
         };
+    }
+
+    getButton() {
+        return this.popupButton;
     }
 }
