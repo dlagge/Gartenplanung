@@ -82,11 +82,22 @@ export class PopupWindow {
         this.search.style.outline = 'none';
         this.search.style.width = '70%';
         this.search.style.height = '2rem';
+        this.search.style.backgroundImage = 'url("./images/lupe.png")';
+        this.search.style.backgroundPosition = '3% 50%';
+        this.search.style.backgroundSize = '1.4rem';
+        this.search.style.backgroundRepeat = 'no-repeat';
+        this.search.style.color = '#707070';
+        this.search.style.fontFamily = 'Arial';
+        this.search.style.fontSize = '1rem';
+        this.search.style.fontWeight = 'normal';
         this.search.onfocus = function () {
             this.style.borderColor = '#fff'; 
+            this.style.backgroundSize = '0rem';
         };
         this.search.onblur = function () {
-            this.style.borderColor = '#b4dbff'; 
+            this.style.borderColor = '#b4dbff';
+            this.style.backgroundSize = '1.4rem';
+            this.value = '';
         };
 
         this.popupWindow.appendChild(this.search);
