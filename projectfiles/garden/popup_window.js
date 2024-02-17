@@ -1,3 +1,5 @@
+import { PopupTiles } from "./popup_tiles";
+
 export class PopupWindow {
 
     createPopup() {
@@ -75,10 +77,11 @@ export class PopupWindow {
 
     createSearch() {
         this.search = document.createElement('input');
-        this.search.setAttribute('type', 'text');
-        this.search.style.borderRadius = '5px';
+        this.search.style.borderRadius = '0.4rem';
         this.search.style.borderColor = '#b4dbff';
         this.search.style.borderStyle = 'solid';
+        this.search.style.borderWidth = '0.15rem';
+        this.search.style.marginBottom = '0.5rem';
         this.search.style.outline = 'none';
         this.search.style.width = '70%';
         this.search.style.height = '2rem';
@@ -91,7 +94,7 @@ export class PopupWindow {
         this.search.style.fontSize = '1rem';
         this.search.style.fontWeight = 'normal';
         this.search.onfocus = function () {
-            this.style.borderColor = '#fff'; 
+            this.style.borderColor = '#e6e6e6'; 
             this.style.backgroundSize = '0rem';
         };
         this.search.onblur = function () {
@@ -101,6 +104,12 @@ export class PopupWindow {
         };
 
         this.popupWindow.appendChild(this.search);
+
+        let tiles = new PopupTiles();
+
+        this.search.addEventListener('input', function() {
+            tiles.showFilteredTiles(this.value);
+        });
     }
 
 }
