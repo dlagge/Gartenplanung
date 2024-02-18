@@ -45,6 +45,7 @@ export class PopupWindow {
 
     createCloseButtonStyle() {
         this.closeButton = document.createElement('button');
+        this.closeButton.setAttribute('id', 'popupWindowclose');
         this.closeButton.style.position = 'absolute';
         this.closeButton.style.right = '0.8rem';
         this.closeButton.style.top = '0.8rem';

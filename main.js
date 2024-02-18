@@ -19,7 +19,8 @@ let selectorcolor = 0xf2f0f0;
 let ground_width = 150;
 let ground_length = 150;
 let floorvecSelector = new THREE.Vector3(0, 0.5, 0);
-let camera, scene, renderer, ground, controls, lights, model, mesh, raycaster, pointer, hoverselector;
+let camera, scene, renderer, ground, controls, lights, mesh, raycaster, pointer, hoverselector, obj;
+
 let objects = [];
 
 
@@ -47,6 +48,15 @@ function createPopup() {
     popup.createPopup();
 }
 
+export function createmodel(objfunc) {
+    obj = objfunc;
+}
+
+export function createmesh(meshfunc) {
+    scene.getScene().add(meshfunc);
+    mesh = meshfunc;
+}
+
 // Erstellt: Licht, Boden, Modelle
 function createGarden() {
     lights = new Lights();
@@ -57,11 +67,13 @@ function createGarden() {
     raycaster = new THREE.Raycaster();
     pointer = new THREE.Vector2();
 
-    model = new Model('./models/karotte.glb');
+    let model = new Model();
+    model.setModelName('../../models/empty.glb');
     model.getModel().load(model.getModelName(), (gltf) => {
-        mesh = gltf.scene;
-        scene.getScene().add(mesh);
+        let mesh = gltf.scene;
+        createmesh(mesh);
     });
+    createmodel('./models/empty.glb');
 
     scene.getScene().add(
         ground.getPlane(),
@@ -75,7 +87,7 @@ function createGarden() {
     // listeners
     document.addEventListener('pointermove', onPointerMove);
     document.addEventListener('pointerdown', onPointerDown);
-    window.addEventListener( 'resize', onWindowResize, false );
+    window.addEventListener('resize', onWindowResize, false);
 
     animate();
 }
@@ -98,32 +110,34 @@ function onPointerMove(event) {
 
 // Objekte werden auf die Gartenfläche gesetzt, wenn es einen Linksmausklick gibt
 function onPointerDown(event) {
-    pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
-    raycaster.setFromCamera(pointer, camera.getCamera());
-    const intersects = raycaster.intersectObjects(objects, false);
+    if (event.srcElement.attributes[0].nodeValue !== "./images/plus.png") {
+        pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
+        raycaster.setFromCamera(pointer, camera.getCamera());
+        const intersects = raycaster.intersectObjects(objects, false);
 
-    // Objekte in den Boden setzen
-    const floorvec = new THREE.Vector3(0, 4, 0);
-
-    if (intersects.length > 0) {
-        const intersect = intersects[0];
-
-        if (event.button === 0) {
+        // Objekte in den Boden setzen
+        const floorvec = new THREE.Vector3(0, 4, 0);
+        if (event.srcElement.attributes[0].nodeValue == "three.js r160" && intersects.length > 0 && event.button === 0) {
+            const intersect = intersects[0];
 
             // Model auf Boden platzieren
-            let model_placed = new Model('./models/karotte.glb');
+            let model_placed = new Model();
+            model_placed.setModelName(obj);
             model_placed.getModel().load(model_placed.getModelName(), (gltf) => {
+
                 let mesh_placed = gltf.scene;
                 mesh_placed.position.copy(intersect.point).add(intersect.face.normal);
                 mesh_placed.position.sub(floorvec);
                 scene.getScene().add(mesh_placed);
                 objects.push(mesh_placed);
+                console.log(objects);
             });
+
         }
     }
 }
 
-function onWindowResize(){
+function onWindowResize() {
     camera.getCamera().aspect = window.innerWidth / window.innerHeight;
     camera.getCamera().updateProjectionMatrix();
     renderer.getRenderer().setSize(window.innerWidth, window.innerHeight);
@@ -137,4 +151,3 @@ function animate() {
 function render() {
     renderer.getRenderer().render(scene.getScene(), camera.getCamera());
 }
-
