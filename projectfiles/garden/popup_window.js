@@ -35,6 +35,14 @@ export class PopupWindow {
         }
     }
 
+    createTileWindow() {
+        this.tileWindow = document.createElement('div');
+        this.tileWindow.setAttribute('id', 'popupTiles');
+        this.tileWindow.style.height = '82%';
+        this.tileWindow.style.overflow = 'auto';
+        this.popupWindow.appendChild(this.tileWindow);
+    }
+
     createCloseButtonStyle() {
         this.closeButton = document.createElement('button');
         this.closeButton.style.position = 'absolute';
@@ -102,8 +110,9 @@ export class PopupWindow {
             this.style.backgroundSize = '1.4rem';
             this.value = '';
         };
-
+        
         this.popupWindow.appendChild(this.search);
+        this.createTileWindow();
 
         let tiles = new PopupTiles();
 
@@ -111,5 +120,4 @@ export class PopupWindow {
             tiles.showFilteredTiles(this.value);
         });
     }
-
 }
