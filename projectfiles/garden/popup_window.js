@@ -122,22 +122,30 @@ export class PopupWindow {
             tiles.showFilteredTiles(this.value);
             console.log(document.getElementById('popupTiles').childElementCount);
             if (document.getElementById('popupTiles').childElementCount == 0) {
-                this.plantButtondiv = document.createElement('div');
+                this.plantbuttonContainer = document.createElement('div');
+              //  this.plantbuttonContainer.style.margin = 'auto';
+              //  this.plantbuttonContainer.style.position = 'absolute';
+               this.plantbuttonContainer.style.width = '100%';
+               this.plantbuttonContainer.style.height = '100%';
+               // this.plantbuttonContainer.style.transform = 'translate(120%, 120%)';
                 this.plantButton = document.createElement('button');
                 this.plantButton.style.height = '5.5rem';
                 this.plantButton.style.width = '5.5rem';
-                this.plantButton.style.margin = '50%';
+                this.plantButton.style.position = 'absolute';
+                this.plantButton.style.top = '50%';
+                this.plantButton.style.left = '50%';
                 this.plantButton.style.borderRadius = '50%';
+                this.plantButton.style.transform = 'translate(-50%, -50%)';
                 this.plantButton.style.borderWidth = '0.35rem';
                 this.plantButton.style.borderColor = 'white';
                 this.plantButton.style.borderStyle = 'solid';
                 this.plantButton.style.background = 'none';
                 this.plantButton.style.cursor = "pointer";
                 this.plantButton.innerHTML = '<img src="./images/plus.png" style="width:3rem; margin-top:0.3rem" />';
-
-                this.plantButtondiv.appendChild(this.plantButton);
-                document.getElementById('popupTiles').appendChild(this.plantButtondiv);
-            } else if (this.plantButtondiv != null && document.getElementById('popupTiles').childElementCount > 0) {
+                this.plantbuttonContainer.appendChild(this.plantButton);
+                document.getElementById('popupTiles').appendChild(this.plantbuttonContainer);
+                document.getElementById('popupTiles').style.position = 'relative'
+            } else if (this.plantButton != null && document.getElementById('popupTiles').childElementCount > 0) {
                 this.plantButtondiv.remove();
             }
         });
