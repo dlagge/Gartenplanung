@@ -38,7 +38,7 @@ export class PopupTiles {
         this.img.style.width = '4rem';
         this.plantimg = document.createElement('img');
         this.plantimg.src = './images/' + this.searcharr[id][0] + '.png';
-        this.plantimg.style.height = '7rem';
+        this.plantimg.style.height = '6.5rem';
         this.plantimg.style.marginLeft = '0.3rem';
         this.plantimg.style.marginTop = '0.1rem';
         this.img.appendChild(this.plantimg);
@@ -71,7 +71,7 @@ export class PopupTiles {
             this.label.style.color = 'white';
             this.label.style.fontSize = '1rem';
             this.label.style.padding = '0.4rem';
-            this.label.style.backgroundColor = '#b4dbff';
+            this.label.style.backgroundColor = '#b3847a';
             this.label.style.marginTop = '0.5rem';
             this.label.style.marginRight = '0.7rem';
             this.label.style.borderRadius = '1rem';
@@ -79,11 +79,11 @@ export class PopupTiles {
             this.labels.appendChild(this.label);
 
             this.label.onmouseover = function () {
-                this.style.background = '#b3847a';
+                this.style.background = '#b4dbff';
                 this.style.transition = '1s';
             };
             this.label.onmouseout = function () {
-                this.style.background = '#b4dbff';
+                this.style.background = '#b3847a';
             };
             this.label.onclick = function () {
                 document.getElementById('inputsearch').value = this.innerHTML;

@@ -53,15 +53,15 @@ export class PopupWindow {
         this.closeButton.style.width = '2.8rem';
         this.closeButton.style.borderRadius = '50%';
         this.closeButton.style.border = 'none';
-        this.closeButton.style.background = '#b4dbff';
+        this.closeButton.style.background = '#b3847a';
         this.closeButton.style.cursor = "pointer";
         this.closeButton.innerHTML = '<img src="./images/plus.png" style="width:1.6rem; margin-top:0.2rem; transform:rotate(45deg);" />';
         this.closeButton.onmouseover = function () {
-            this.style.background = '#b3847a';
+            this.style.background = '#b4dbff';
             this.style.transition = '1s';
         };
         this.closeButton.onmouseout = function () {
-            this.style.background = '#b4dbff';
+            this.style.background = '#b3847a';
         };
         this.closeButton.onclick = function () {
             document.getElementById('popupButton').style.display = 'block';
@@ -104,7 +104,7 @@ export class PopupWindow {
         this.search.style.fontSize = '1rem';
         this.search.style.fontWeight = 'normal';
         this.search.onfocus = function () {
-            this.style.borderColor = '#e6e6e6'; 
+            this.style.borderColor = '#e6e6e6';
             this.style.backgroundSize = '0';
         };
         this.search.onblur = function () {
@@ -112,14 +112,34 @@ export class PopupWindow {
             this.style.backgroundSize = '1.4rem';
             this.value = '';
         };
-        
+
         this.popupWindow.appendChild(this.search);
         this.createTileWindow();
 
         let tiles = new PopupTiles();
 
-        this.search.addEventListener('input', function() {
+        this.search.addEventListener('input', function () {
             tiles.showFilteredTiles(this.value);
+            console.log(document.getElementById('popupTiles').childElementCount);
+            if (document.getElementById('popupTiles').childElementCount == 0) {
+                this.plantButtondiv = document.createElement('div');
+                this.plantButton = document.createElement('button');
+                this.plantButton.style.height = '5.5rem';
+                this.plantButton.style.width = '5.5rem';
+                this.plantButton.style.margin = '50%';
+                this.plantButton.style.borderRadius = '50%';
+                this.plantButton.style.borderWidth = '0.35rem';
+                this.plantButton.style.borderColor = 'white';
+                this.plantButton.style.borderStyle = 'solid';
+                this.plantButton.style.background = 'none';
+                this.plantButton.style.cursor = "pointer";
+                this.plantButton.innerHTML = '<img src="./images/plus.png" style="width:3rem; margin-top:0.3rem" />';
+
+                this.plantButtondiv.appendChild(this.plantButton);
+                document.getElementById('popupTiles').appendChild(this.plantButtondiv);
+            } else if (this.plantButtondiv != null && document.getElementById('popupTiles').childElementCount > 0) {
+                this.plantButtondiv.remove();
+            }
         });
     }
 }
