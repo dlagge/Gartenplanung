@@ -86,6 +86,7 @@ export class PopupWindow {
 
     createSearch() {
         this.search = document.createElement('input');
+        this.search.setAttribute('id', 'inputsearch');
         this.search.style.borderRadius = '0.4rem';
         this.search.style.borderColor = '#b4dbff';
         this.search.style.borderStyle = 'solid';
@@ -104,7 +105,7 @@ export class PopupWindow {
         this.search.style.fontWeight = 'normal';
         this.search.onfocus = function () {
             this.style.borderColor = '#e6e6e6'; 
-            this.style.backgroundSize = '0rem';
+            this.style.backgroundSize = '0';
         };
         this.search.onblur = function () {
             this.style.borderColor = '#b4dbff';

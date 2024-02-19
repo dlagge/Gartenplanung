@@ -5,7 +5,7 @@ export class PopupTiles {
 
     constructor() {
         this.searcharr = [
-            ['karotte', 'Rüebli', 'sonnig', 'A', 'Mittelzehrer', 'April - Juni', 'Antikrebs', 'Augengesundheit'],
+            ['karotte', 'Rüebli', 'sonnig', 'A', 'Mittelzehrer', 'April - Juni', 'Antikrebs', 'Augengesundheit', 'Eisen 0,4mg', 'Magnesium 17mg', 'Kalzium 41mg', 'Fett 0.2g', 'Protein 1g'],
             ['karotte', 'Apfel', 'sonnig', 'C'],
             ['lauch', 'Lauch', 'Poree', 'C', 'K', 'Kalium'],
             ['karotte', 'Erdbeere', 'Rosengewächse', 'C'],
@@ -26,16 +26,21 @@ export class PopupTiles {
         this.tile.style.borderStyle = 'solid';
         this.tile.style.borderWidth = '0.15rem';
         this.tile.style.background = '#fff';
-        this.tile.style.height = '5rem';
+        this.tile.style.height = '7rem';
         this.tile.style.marginTop = '0.5rem';
         document.getElementById('popupTiles').appendChild(this.tile);
+
         this.img = document.createElement('div');
+        this.img.style.cursor = 'pointer';
         this.img.style.float = 'left';
         this.img.style.marginRight = '1rem';
+        this.img.style.borderRight = '0.15rem dashed #e6e6e6';
+        this.img.style.width = '4rem';
         this.plantimg = document.createElement('img');
         this.plantimg.src = './images/' + this.searcharr[id][0] + '.png';
-        this.plantimg.style.height = '5rem';
-        this.plantimg.style.marginLeft = '0.4rem';
+        this.plantimg.style.height = '7rem';
+        this.plantimg.style.marginLeft = '0.3rem';
+        this.plantimg.style.marginTop = '0.1rem';
         this.img.appendChild(this.plantimg);
         this.tile.appendChild(this.img);
 
@@ -51,7 +56,44 @@ export class PopupTiles {
         this.title.appendChild(h2);
         this.tile.appendChild(this.title);
 
-        this.tile.onclick = function () {
+        this.labels = document.createElement('div');
+        this.labels.style.marginTop = '-0.9rem';
+        this.labels.style.marginRight = '0.5rem';
+        this.labels.style.marginLeft = '3.5rem';
+        this.labels.style.height = '5rem';
+        this.labels.style.overflow = 'auto';
+
+        for (let i = 2; i < this.searcharr[id].length; i++) {
+            this.label = document.createElement('button');
+            this.label.style.cursor = 'pointer';
+            this.label.style.border = 'none';
+            this.label.style.float = 'left';
+            this.label.style.color = 'white';
+            this.label.style.fontSize = '1rem';
+            this.label.style.padding = '0.4rem';
+            this.label.style.backgroundColor = '#b4dbff';
+            this.label.style.marginTop = '0.5rem';
+            this.label.style.marginRight = '0.7rem';
+            this.label.style.borderRadius = '1rem';
+            this.label.innerHTML = this.searcharr[id][i];
+            this.labels.appendChild(this.label);
+
+            this.label.onmouseover = function () {
+                this.style.background = '#b3847a';
+                this.style.transition = '1s';
+            };
+            this.label.onmouseout = function () {
+                this.style.background = '#b4dbff';
+            };
+            this.label.onclick = function () {
+                document.getElementById('inputsearch').value = this.innerHTML;
+                document.getElementById('inputsearch').style.backgroundSize = '0';
+            };
+        }
+
+        this.tile.appendChild(this.labels);
+
+        this.img.onclick = function () {
             let popuptiles = new PopupTiles();
             document.getElementById('popupWindowclose').click();
             setTimeout(() => {
