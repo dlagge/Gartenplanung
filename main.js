@@ -9,6 +9,7 @@ import { Geometry } from './projectfiles/garden/geometry';
 import { Model } from './projectfiles/garden/model';
 import { PopupButton } from './projectfiles/garden/popup_button';
 import { PopupWindow } from "./projectfiles/garden/popup_window";
+import { PlantPopup } from "./projectfiles/garden/plantpopup";
 
 
 //----------------------- Variablen -----------------------//
@@ -18,7 +19,7 @@ let groundcolor = 0xedae87;
 let selectorcolor = 0xb3847a;
 let ground_width = 150;
 let ground_length = 150;
-let camera, scene, renderer, ground, controls, lights, mesh, raycaster, pointer, obj;
+let camera, scene, renderer, ground, lights, mesh, raycaster, pointer, obj, plantpopup;
 
 let objects = [];
 
@@ -36,7 +37,7 @@ function init() {
     camera = new Camera();
     scene = new Scene(skycolor);
     renderer = new Renderer();
-    controls = new Controls(camera.getCamera(), renderer.getRenderer().domElement);
+    new Controls(camera.getCamera(), renderer.getRenderer().domElement);
 }
 
 // Erstellt: Das Popup mit dem Popup Button, welches das Popup öffnet
@@ -45,6 +46,8 @@ function createPopup() {
     popupButton.getButton();
     let popup = new PopupWindow();
     popup.createPopup();
+    plantpopup = new PlantPopup();
+    plantpopup.createPopup();
 }
 
 export function createmodel(objfunc) {
@@ -129,28 +132,38 @@ function onPointerDown(event) {
 
     // Objekte in den Boden setzen
     const floorvec = new THREE.Vector3(0, 4, 0);
+    
+    if(document.getElementById('PlantPopupWindow').style.display === 'block') {
+        document.getElementById('PlantPopupWindow').style.display = 'none';
+        document.getElementById('PlantPopupTitle').remove();
+    }
+
     if (intersects.length > 0 && event.button === 0) {
         const intersect = intersects[0];
 
         // Model auf Boden platzieren
         let model_placed = new Model();
+        model_placed.setModelName(obj);
+
         if (intersects.length > 1) {
             console.log(objects);
-            objects.forEach((object, i) => {
+            let objcount = 1;
+            objects.forEach(object => {
                 intersects.forEach(intersect => {
-                    if (object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
-                        console.log("hi");
+                    if (object.uuid == intersect.object.parent.uuid && object !== ground.getPlane() && model_placed.getModelName() !== './models/empty.glb') {
                         objects = objects.filter(obj => obj !== object);
                         scene.getScene().remove(object);
+                    }
+                    if (object.uuid == intersect.object.parent.uuid && object !== ground.getPlane() && model_placed.getModelName() === './models/empty.glb' && objcount === 1) {
+                        plantpopup.createTitle(intersect.object.name);
+                        objcount++;
+                        document.getElementById('PlantPopupWindow').style.display = 'block'; 
                     }
                 });
             });
         } else {
-            model_placed.setModelName(obj);
             model_placed.getModel().load(model_placed.getModelName(), (gltf) => {
-
                 let mesh_placed = gltf.scene;
-
                 mesh_placed.position.copy(intersect.point).add(intersect.face.normal);
                 mesh_placed.position.sub(floorvec);
                 scene.getScene().add(mesh_placed);
@@ -159,7 +172,6 @@ function onPointerDown(event) {
             });
         }
     }
-
 }
 
 function onWindowResize() {

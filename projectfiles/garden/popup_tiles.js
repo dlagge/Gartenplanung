@@ -5,7 +5,7 @@ export class PopupTiles {
 
     constructor() {
         this.searcharr = [
-            ['karotte', 'Rüebli', 'sonnig', 'A', 'Mittelzehrer', 'April - Juni', 'Antikrebs', 'Augengesundheit', 'Eisen 0,4mg', 'Magnesium 17mg', 'Kalzium 41mg', 'Fett 0.2g', 'Protein 1g'],
+            ['karotte', 'Rüebli', 'sonnig', 'A', 'Mittelzehrer', 'April-Juni', 'Antikrebs', 'Augengesundheit', 'Eisen 0,4mg', 'Magnesium 17mg', 'Kalzium 41mg', 'Fett 0.2g', 'Protein 1g'],
             ['karotte', 'Apfel', 'sonnig', 'C'],
             ['lauch', 'Lauch', 'Poree', 'C', 'K', 'Kalium'],
             ['karotte', 'Erdbeere', 'Rosengewächse', 'C'],
