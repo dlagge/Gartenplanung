@@ -1,27 +1,13 @@
 import * as THREE from 'three';
 
 export class Geometry {
-    constructor(geometryColor) {
-        this.geometryColor = geometryColor;
-    }
-
-    createPlane(width, length) {
-        let geometry = new THREE.PlaneGeometry(width, length);
+    createPlane(width, length, planecolor) {
+        let geometry = new THREE.BoxGeometry(width, length, 10);
         geometry.rotateX(- Math.PI / 2);
-        this.plane = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ visible: true, color: this.geometryColor }));
+        this.plane = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ visible: true, color: planecolor }));
     }
 
     getPlane() {
         return this.plane;
-    }
-
-    createSelector() {
-        let selectorGeo = new THREE.CylinderGeometry( 3, 3, 0.1, 50 ); 
-        let material = new THREE.MeshBasicMaterial( {color: 0xb3847a} ); 
-        this.selectorMesh = new THREE.Mesh( selectorGeo, material );
-    }
-
-    getSelector() {
-        return this.selectorMesh;
     }
 }

@@ -15,11 +15,10 @@ import { PopupWindow } from "./projectfiles/garden/popup_window";
 
 let skycolor = 0xb4dbff;
 let groundcolor = 0xedae87;
-let selectorcolor = 0xf2f0f0;
+let selectorcolor = 0xb3847a;
 let ground_width = 150;
 let ground_length = 150;
-let floorvecSelector = new THREE.Vector3(0, 0.5, 0);
-let camera, scene, renderer, ground, controls, lights, mesh, raycaster, pointer, hoverselector, obj;
+let camera, scene, renderer, ground, controls, lights, mesh, raycaster, pointer, obj;
 
 let objects = [];
 
@@ -61,9 +60,7 @@ export function createmesh(meshfunc) {
 function createGarden() {
     lights = new Lights();
     ground = new Geometry(groundcolor);
-    ground.createPlane(ground_width, ground_length);
-    hoverselector = new Geometry(selectorcolor);
-    hoverselector.createSelector();
+    ground.createPlane(ground_width, ground_length, groundcolor);
     raycaster = new THREE.Raycaster();
     pointer = new THREE.Vector2();
 
@@ -78,8 +75,7 @@ function createGarden() {
     scene.getScene().add(
         ground.getPlane(),
         lights.getAmbientLight(),
-        lights.getDirLight(),
-        hoverselector.getSelector()
+        lights.getDirLight()
     );
 
     objects.push(ground.getPlane());
@@ -97,44 +93,73 @@ function createGarden() {
 function onPointerMove(event) {
     pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
     raycaster.setFromCamera(pointer, camera.getCamera());
-    const intersects = raycaster.intersectObjects(objects, false);
+    const intersects = raycaster.intersectObjects(objects, true);
 
     if (intersects.length > 0 && !event.shiftKey) {
         const intersect = intersects[0];
+        if (intersects.length > 1) {
+            intersects.forEach(intersect => {
+                intersect.object.traverse((child) => {
+                    if (child.material && intersect.object.name !== '') {
+                        child.material.color.setHex(selectorcolor);
+                    }
+                });
+            });
+        } else {
+            objects.forEach(obj => {
+                obj.traverse((child) => {
+                    if (child.material && obj.name !== '') {
+                        child.material.color.setHex(0xffffff);
+                    }
+                });
+            });
+        }
 
         // Model auf dem Boden anzeigen
-        hoverselector.getSelector().position.copy(intersect.point).add(intersect.face.normal).add(floorvecSelector);
         mesh.position.copy(intersect.point).add(intersect.face.normal);
     }
 }
 
 // Objekte werden auf die Gartenfläche gesetzt, wenn es einen Linksmausklick gibt
 function onPointerDown(event) {
-    if (event.srcElement.attributes[0].nodeValue !== "./images/plus.png") {
-        pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
-        raycaster.setFromCamera(pointer, camera.getCamera());
-        const intersects = raycaster.intersectObjects(objects, false);
 
-        // Objekte in den Boden setzen
-        const floorvec = new THREE.Vector3(0, 4, 0);
-        if (event.srcElement.attributes[0].nodeValue == "three.js r160" && intersects.length > 0 && event.button === 0) {
-            const intersect = intersects[0];
+    pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
+    raycaster.setFromCamera(pointer, camera.getCamera());
+    const intersects = raycaster.intersectObjects(objects, true);
 
-            // Model auf Boden platzieren
-            let model_placed = new Model();
+    // Objekte in den Boden setzen
+    const floorvec = new THREE.Vector3(0, 4, 0);
+    if (intersects.length > 0 && event.button === 0) {
+        const intersect = intersects[0];
+
+        // Model auf Boden platzieren
+        let model_placed = new Model();
+        if (intersects.length > 1) {
+            console.log(objects);
+            objects.forEach((object, i) => {
+                intersects.forEach(intersect => {
+                    if (object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
+                        console.log("hi");
+                        objects = objects.filter(obj => obj !== object);
+                        scene.getScene().remove(object);
+                    }
+                });
+            });
+        } else {
             model_placed.setModelName(obj);
             model_placed.getModel().load(model_placed.getModelName(), (gltf) => {
 
                 let mesh_placed = gltf.scene;
+
                 mesh_placed.position.copy(intersect.point).add(intersect.face.normal);
                 mesh_placed.position.sub(floorvec);
                 scene.getScene().add(mesh_placed);
                 objects.push(mesh_placed);
-                console.log(objects);
-            });
 
+            });
         }
     }
+
 }
 
 function onWindowResize() {
