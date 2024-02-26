@@ -133,10 +133,12 @@ function onPointerDown(event) {
     // Objekte in den Boden setzen
     const floorvec = new THREE.Vector3(0, 4, 0);
     
+    /*
     if(document.getElementById('PlantPopupWindow').style.display === 'block') {
         document.getElementById('PlantPopupWindow').style.display = 'none';
-        document.getElementById('PlantPopupTitle').remove();
     }
+
+    */
 
     if (intersects.length > 0 && event.button === 0) {
         const intersect = intersects[0];
@@ -155,7 +157,7 @@ function onPointerDown(event) {
                         scene.getScene().remove(object);
                     }
                     if (object.uuid == intersect.object.parent.uuid && object !== ground.getPlane() && model_placed.getModelName() === './models/empty.glb' && objcount === 1) {
-                        plantpopup.createTitle(intersect.object.name);
+                        document.getElementById('PlantPopupTitle').innerHTML = intersect.object.name;
                         objcount++;
                         document.getElementById('PlantPopupWindow').style.display = 'block'; 
                     }

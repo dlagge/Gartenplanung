@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "air-datepicker": "^3.4.0",
     "three": "^0.160.1"
   },
   "devDependencies": {
