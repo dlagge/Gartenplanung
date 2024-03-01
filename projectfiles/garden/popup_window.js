@@ -27,7 +27,7 @@ export class PopupWindow {
 
         } else {
             this.popupWindow.style.setProperty("-webkit-filter", "drop-shadow(2px 2px 2px #b3847a)");
-            this.popupWindow.style.borderRadius = '2%';
+            this.popupWindow.style.borderRadius = '1rem';
             this.popupWindow.style.left = '32.5%';
             this.popupWindow.style.top = '20%';
             this.popupWindow.style.height = '50%';
@@ -103,6 +103,7 @@ export class PopupWindow {
         this.search.style.fontFamily = 'Arial';
         this.search.style.fontSize = '1rem';
         this.search.style.fontWeight = 'normal';
+        this.search.style.paddingLeft = '0.5rem';
         this.search.onfocus = function () {
             this.style.borderColor = '#e6e6e6';
             this.style.backgroundSize = '0';

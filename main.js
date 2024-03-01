@@ -20,8 +20,9 @@ let selectorcolor = 0xb3847a;
 let ground_width = 150;
 let ground_length = 150;
 let camera, scene, renderer, ground, lights, mesh, raycaster, pointer, obj, plantpopup;
-
+let deleteButtonClicked = false;
 let objects = [];
+let intersectSavedArr = [];
 
 
 //----------------------- Funktionsaufrufe -----------------------//
@@ -57,6 +58,10 @@ export function createmodel(objfunc) {
 export function createmesh(meshfunc) {
     scene.getScene().add(meshfunc);
     mesh = meshfunc;
+}
+
+export function clickedDeleteButton(click) {
+    deleteButtonClicked = click;
 }
 
 // Erstellt: Licht, Boden, Modelle
@@ -132,13 +137,16 @@ function onPointerDown(event) {
 
     // Objekte in den Boden setzen
     const floorvec = new THREE.Vector3(0, 4, 0);
-    
-    /*
-    if(document.getElementById('PlantPopupWindow').style.display === 'block') {
-        document.getElementById('PlantPopupWindow').style.display = 'none';
+    console.log(deleteButtonClicked);
+    if (deleteButtonClicked) {
+        console.log("hi");
+        intersectSavedArr.forEach(intersectelement => {
+            objects = objects.filter(obj => obj !== intersectelement);
+            scene.getScene().remove(intersectelement);
+        });
+        deleteButtonClicked = false;
     }
 
-    */
 
     if (intersects.length > 0 && event.button === 0) {
         const intersect = intersects[0];
@@ -148,18 +156,19 @@ function onPointerDown(event) {
         model_placed.setModelName(obj);
 
         if (intersects.length > 1) {
-            console.log(objects);
-            let objcount = 1;
+
             objects.forEach(object => {
                 intersects.forEach(intersect => {
-                    if (object.uuid == intersect.object.parent.uuid && object !== ground.getPlane() && model_placed.getModelName() !== './models/empty.glb') {
+                    if (model_placed.getModelName() !== './models/empty.glb' && object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
                         objects = objects.filter(obj => obj !== object);
                         scene.getScene().remove(object);
                     }
-                    if (object.uuid == intersect.object.parent.uuid && object !== ground.getPlane() && model_placed.getModelName() === './models/empty.glb' && objcount === 1) {
+
+                    if (model_placed.getModelName() === './models/empty.glb' && object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
                         document.getElementById('PlantPopupTitle').innerHTML = intersect.object.name;
-                        objcount++;
-                        document.getElementById('PlantPopupWindow').style.display = 'block'; 
+                        document.getElementById('PlantPopupWindow').style.display = 'block';
+                        intersectSavedArr.push(object);
+                        console.log(intersectSavedArr);
                     }
                 });
             });
@@ -170,7 +179,6 @@ function onPointerDown(event) {
                 mesh_placed.position.sub(floorvec);
                 scene.getScene().add(mesh_placed);
                 objects.push(mesh_placed);
-
             });
         }
     }

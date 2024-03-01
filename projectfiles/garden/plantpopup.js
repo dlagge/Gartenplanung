@@ -1,6 +1,7 @@
 import AirDatepicker from 'air-datepicker';
 import 'air-datepicker/air-datepicker.css';
 import localeDe from 'air-datepicker/locale/de';
+import { clickedDeleteButton } from '../../main.js';
 
 export class PlantPopup {
 
@@ -9,6 +10,7 @@ export class PlantPopup {
         this.createCloseButtonStyle();
         this.createTitle();
         this.popupText();
+        this.createDeleteButtonStyle();
     }
 
     createWindowStyle() {
@@ -29,7 +31,7 @@ export class PlantPopup {
 
         } else {
             this.popupWindow.style.setProperty("-webkit-filter", "drop-shadow(2px 2px 2px #b3847a)");
-            this.popupWindow.style.borderRadius = '2%';
+            this.popupWindow.style.borderRadius = '1rem';
             this.popupWindow.style.left = '32.5%';
             this.popupWindow.style.top = '20%';
             this.popupWindow.style.height = '20%';
@@ -89,11 +91,12 @@ export class PlantPopup {
         h21.style.fontWeight = 'normal';
 
         let h22 = document.createElement("h2");
+        h22.setAttribute('id', 'ausgesdate');
         h22.style.color = '#707070';
         h22.style.fontFamily = 'Arial';
         h22.style.fontSize = '1rem';
         h22.style.fontWeight = 'normal';
-        
+
         let ausges = document.createTextNode('Ausgesäht am:');
         this.search = document.createElement('input');
         this.search.setAttribute('id', 'ausgesinput');
@@ -105,7 +108,12 @@ export class PlantPopup {
         this.search.style.outline = 'none';
         this.search.style.width = '70%';
         this.search.style.height = '2rem';
-        
+        this.search.style.color = '#707070';
+        this.search.style.fontFamily = 'Arial';
+        this.search.style.fontSize = '1rem';
+        this.search.style.fontWeight = 'normal';
+        this.search.style.paddingLeft = '0.5rem';
+
         let ernte = document.createTextNode('Voraussichtliche Ernte: ');
 
 
@@ -113,19 +121,80 @@ export class PlantPopup {
         this.ausges.appendChild(h21);
         this.ausges.appendChild(this.search);
         new AirDatepicker(this.search, {
-            locale: localeDe
-        })
+            locale: localeDe,
+            onSelect({ formattedDate }) {
+                let date = parseInt(formattedDate.slice(3, 5));
+                function erntemonat() {
+                    switch (date) {
+                        case 1:
+                            return 'Januar';
+                        case 2:
+                            return 'Februar';
+                        case 3:
+                            return 'März';
+                        case 4:
+                            return 'April';
+                        case 5:
+                            return 'Mai';
+                        case 6:
+                            return 'Juni';
+                        case 7:
+                            return 'Juli';
+                        case 8:
+                            return 'August';
+                        case 9:
+                            return 'September';
+                        case 10:
+                            return 'Oktober';
+                        case 11:
+                            return 'November';
+                        case 12:
+                            return 'Dezember';
+                    }
+                }
 
+                document.getElementById('ausgesdate').innerHTML = 'Voraussichtliche Ernte: ' + erntemonat();
+            }
+        })
 
         h22.appendChild(ernte);
         this.ernte.appendChild(h22);
-        
+
         this.textdiv.appendChild(this.ausges);
-        
+
         this.textdiv.appendChild(this.ernte);
 
         this.popupWindow.appendChild(this.textdiv);
-        
+
+    }
+
+    createDeleteButtonStyle() {
+        this.deleteButton = document.createElement('button');
+        this.deleteButton.setAttribute('id', 'PlantDelete');
+        this.deleteButton.style.position = 'absolute';
+        this.deleteButton.style.left = '0.8rem';
+        this.deleteButton.style.bottom = '0.8rem';
+        this.deleteButton.style.padding = '0.4rem';
+        this.deleteButton.style.borderRadius = '1rem';
+        this.deleteButton.style.border = 'none';
+        this.deleteButton.style.background = '#fb7f7f';
+        this.deleteButton.style.color = '#ffffff';
+        this.deleteButton.style.cursor = "pointer";
+        this.deleteButton.innerHTML = 'Löschen';
+    
+        this.popupWindow.appendChild(this.deleteButton);
+
+        this.deleteButton.onmouseover = function () {
+            this.style.background = '#b3847a';
+            this.style.transition = '1s';
+        };
+        this.deleteButton.onmouseout = function () {
+            this.style.background = '#fb7f7f';
+        };
+        this.deleteButton.onpointerdown = function () {
+            document.getElementById('PlantPopupWindow').style.display = 'none';
+            clickedDeleteButton(true);
+        };
     }
 
 }
