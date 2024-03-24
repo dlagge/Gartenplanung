@@ -6,11 +6,11 @@ Drehen: Shift + rechter Mausklick halten
 Zoomen: Mausrad
 
 
-## run project
+## Project starten
 npx vite
 
 
-## installation
+## Installation
 
 ### node
 npm init
