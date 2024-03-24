@@ -6,7 +6,7 @@ Drehen: Shift + rechter Mausklick halten
 Zoomen: Mausrad
 
 
-## Project starten
+## Projekt starten
 npx vite
 
 
