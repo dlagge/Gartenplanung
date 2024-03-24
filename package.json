@@ -1,9 +1,19 @@
 {
+  "name": "gartenplanung",
+  "version": "1.0.0",
+  "description": "Gartenplanung mit Three JS",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dominique Lagger",
+  "license": "ISC",
   "dependencies": {
-    "air-datepicker": "^3.4.0",
-    "three": "^0.160.1"
+    "air-datepicker": "^3.5.0",
+    "mysql2": "^3.9.2",
+    "three": "^0.162.0"
   },
   "devDependencies": {
-    "vite": "^5.0.12"
+    "vite": "^5.2.5"
   }
 }
