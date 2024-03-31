@@ -11,16 +11,67 @@ export class PopupTiles {
             ['karotte', 'Erdbeere', 'Rosengewächse', 'C'],
             ['karotte', 'Fenchel', 'Kalium', 'A']
         ];
-        this.createTiles();
+       // this.createTiles();
+
+        fetch('http://localhost:5000/getAll')
+        .then(response => response.json())
+        .then(data => this.createTiles(data['data']));;
     }
 
     getSearchArr() {
         return this.searcharr;
     }
 
-    createTile(title, id) {
+    createTiles(data) {
+        data.forEach(function({plant_link, plant_name, plant_tags}) {
+          //  this.createTile(plant_link, plant_name);
+        let tile = document.createElement('div');
+       // this.tile.setAttribute('id', 'tile' + id);
+        tile.style.borderRadius = '0.4rem';
+        tile.style.borderColor = '#e6e6e6';
+        tile.style.borderStyle = 'solid';
+        tile.style.borderWidth = '0.15rem';
+        tile.style.background = '#fff';
+        tile.style.height = '7rem';
+        tile.style.marginTop = '0.5rem';
+        document.getElementById('popupTiles').appendChild(tile);
+
+        let img = document.createElement('div');
+        img.style.cursor = 'pointer';
+        img.style.float = 'left';
+        img.style.marginRight = '1rem';
+        img.style.borderRight = '0.15rem dashed #e6e6e6';
+        img.style.width = '4rem';
+        let plantimg = document.createElement('img');
+        plantimg.src = './images/' + plant_link + '.png';
+        plantimg.style.height = '6.5rem';
+        plantimg.style.marginLeft = '0.3rem';
+        plantimg.style.marginTop = '0.1rem';
+        img.appendChild(plantimg);
+        tile.appendChild(img);
+
+        let title = document.createElement('div');
+        let h2 = document.createElement("h2");
+        h2.style.color = '#707070';
+        h2.style.fontFamily = 'Arial';
+        h2.style.fontSize = '1rem';
+        h2.style.fontWeight = 'normal';
+        h2.style.marginTop = '0.5rem';
+        let titletext = document.createTextNode(plant_name);
+        h2.appendChild(titletext);
+        title.appendChild(h2);
+        tile.appendChild(title);
+        });
+        /*
+        for (let i = 0; i < this.searcharr.length; i++) {
+            this.createTile(this.searcharr[i][1], i);
+        }
+        */
+    }
+
+    createTile(plant_link, title) {
         this.tile = document.createElement('div');
-        this.tile.setAttribute('id', 'tile' + id);
+       // this.tile.setAttribute('id', 'tile' + id);
         this.tile.style.borderRadius = '0.4rem';
         this.tile.style.borderColor = '#e6e6e6';
         this.tile.style.borderStyle = 'solid';
@@ -37,7 +88,7 @@ export class PopupTiles {
         this.img.style.borderRight = '0.15rem dashed #e6e6e6';
         this.img.style.width = '4rem';
         this.plantimg = document.createElement('img');
-        this.plantimg.src = './images/' + this.searcharr[id][0] + '.png';
+        this.plantimg.src = './images/' + plant_link + '.png';
         this.plantimg.style.height = '6.5rem';
         this.plantimg.style.marginLeft = '0.3rem';
         this.plantimg.style.marginTop = '0.1rem';
@@ -62,7 +113,7 @@ export class PopupTiles {
         this.labels.style.marginLeft = '3.5rem';
         this.labels.style.height = '5rem';
         this.labels.style.overflow = 'auto';
-
+/*
         for (let i = 2; i < this.searcharr[id].length; i++) {
             this.label = document.createElement('button');
             this.label.style.cursor = 'pointer';
@@ -90,6 +141,7 @@ export class PopupTiles {
                 document.getElementById('inputsearch').style.backgroundSize = '0';
             };
         }
+        */
 
         this.tile.appendChild(this.labels);
 
@@ -107,7 +159,7 @@ export class PopupTiles {
             }, 1);
         }
     }
-
+/*
     showFilteredTiles(inputValue) {
         let filter = inputValue.toUpperCase();
         for (let i = 0; i < this.searcharr.length; i++) {
@@ -129,10 +181,7 @@ export class PopupTiles {
             }
         }
     }
+    */
 
-    createTiles() {
-        for (let i = 0; i < this.searcharr.length; i++) {
-            this.createTile(this.searcharr[i][1], i);
-        }
-    }
+    
 }

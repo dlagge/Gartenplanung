@@ -8,9 +8,9 @@ Zoomen: Mausrad
 
 ## Projekt starten
 npx vite
+nodemon app
 
-
-## Installation
+## Weitere Node Module
 
 ### node
 npm init
@@ -27,3 +27,15 @@ npm i air-datepicker
 ### mysql
 npm install mysql2
 
+### express
+npm install express
+
+### dotenv
+npm install dotenv
+
+### nodemon
+npm install nodemon --save-dev
+npm install nodemon -g
+
+### cors
+npm install cors

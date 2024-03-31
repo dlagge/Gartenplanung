@@ -8,7 +8,6 @@ import { Lights } from './projectfiles/garden/lights';
 import { Geometry } from './projectfiles/garden/geometry';
 import { Model } from './projectfiles/garden/model';
 import { PopupButton } from './projectfiles/garden/popup_button';
-import { FinishButton } from "./projectfiles/garden/finish_button";
 import { PopupWindow } from "./projectfiles/garden/popup_window";
 import { PlantPopup } from "./projectfiles/garden/plantpopup";
 
@@ -32,7 +31,6 @@ createPopup();
 init();
 createGarden();
 
-
 //----------------------- Funktionen -----------------------//
 
 // Erstellt: Kamera, Szene, Renderer, Bewegungskontroller
@@ -51,9 +49,6 @@ function createPopup() {
     popup.createPopup();
     plantpopup = new PlantPopup();
     plantpopup.createPopup();
-    let finishButton = new FinishButton();
-    finishButton.getButton();
-
 }
 
 export function createmodel(objfunc) {
@@ -67,14 +62,6 @@ export function createmesh(meshfunc) {
 
 export function clickedDeleteButton(click) {
     deleteButtonClicked = click;
-}
-
-export function getObjects() {
-    return objects;
-}
-
-export function saveScene() {
-    console.log("saved");
 }
 
 // Erstellt: Licht, Boden, Modelle
@@ -117,8 +104,6 @@ function onPointerMove(event) {
     const intersects = raycaster.intersectObjects(objects, true);
 
     if (intersects.length > 0 && !event.shiftKey) {
-        //  document.getElementById(event.id).style.cursor = 'pointer';
-        document.body.style.cursor = 'pointer';
         const intersect = intersects[0];
         if (intersects.length > 1) {
             intersects.forEach(intersect => {
@@ -129,7 +114,6 @@ function onPointerMove(event) {
                 });
             });
         } else {
-            document.body.style.cursor = 'default';
             objects.forEach(obj => {
                 obj.traverse((child) => {
                     if (child.material && obj.name !== '') {
@@ -153,7 +137,9 @@ function onPointerDown(event) {
 
     // Objekte in den Boden setzen
     const floorvec = new THREE.Vector3(0, 4, 0);
+    console.log(deleteButtonClicked);
     if (deleteButtonClicked) {
+        console.log("hi");
         intersectSavedArr.forEach(intersectelement => {
             objects = objects.filter(obj => obj !== intersectelement);
             scene.getScene().remove(intersectelement);
