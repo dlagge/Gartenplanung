@@ -85,50 +85,51 @@ export class PopupWindow {
     }
 
     createSearch() {
-        this.search = document.createElement('input');
-        this.search.setAttribute('id', 'inputsearch');
-        this.search.style.borderRadius = '0.4rem';
-        this.search.style.borderColor = '#b4dbff';
-        this.search.style.borderStyle = 'solid';
-        this.search.style.borderWidth = '0.15rem';
-        this.search.style.marginBottom = '0.5rem';
-        this.search.style.outline = 'none';
-        this.search.style.width = '70%';
-        this.search.style.height = '2rem';
-        this.search.style.backgroundImage = 'url("./images/lupe.png")';
-        this.search.style.backgroundPosition = '3% 50%';
-        this.search.style.backgroundSize = '1.4rem';
-        this.search.style.backgroundRepeat = 'no-repeat';
-        this.search.style.color = '#707070';
-        this.search.style.fontFamily = 'Arial';
-        this.search.style.fontSize = '1rem';
-        this.search.style.fontWeight = 'normal';
-        this.search.style.paddingLeft = '0.5rem';
-        this.search.onfocus = function () {
+        let search = document.createElement('input');
+        search.setAttribute('id', 'inputsearch');
+        search.style.borderRadius = '0.4rem';
+        search.style.borderColor = '#b4dbff';
+        search.style.borderStyle = 'solid';
+        search.style.borderWidth = '0.15rem';
+        search.style.marginBottom = '0.5rem';
+        search.style.outline = 'none';
+        search.style.width = '70%';
+        search.style.height = '2rem';
+        search.style.backgroundImage = 'url("./images/lupe.png")';
+        search.style.backgroundPosition = '3% 50%';
+        search.style.backgroundSize = '1.4rem';
+        search.style.backgroundRepeat = 'no-repeat';
+        search.style.color = '#707070';
+        search.style.fontFamily = 'Arial';
+        search.style.fontSize = '1rem';
+        search.style.fontWeight = 'normal';
+        search.style.paddingLeft = '0.5rem';
+        search.onfocus = function () {
             this.style.borderColor = '#e6e6e6';
             this.style.backgroundSize = '0';
         };
-        this.search.onblur = function () {
+        search.onblur = function () {
             this.style.borderColor = '#b4dbff';
             this.style.backgroundSize = '1.4rem';
             this.value = '';
         };
 
-        this.popupWindow.appendChild(this.search);
+        this.popupWindow.appendChild(search);
         this.createTileWindow();
 
         let tiles = new PopupTiles();
 
-        this.search.addEventListener('input', function () {
-            tiles.showFilteredTiles(this.value);
-            console.log(document.getElementById('popupTiles').childElementCount);
+        search.addEventListener('input', function () {
+            //tiles.showFilteredTiles(this.value);
+
+            fetch('http://localhost:5000/getSearchResult/' + document.getElementById('inputsearch').value)
+            .then(response => response.json())
+            .then(data => this.createTiles(data['data']));
+
             if (document.getElementById('popupTiles').childElementCount == 0) {
                 this.plantbuttonContainer = document.createElement('div');
-              //  this.plantbuttonContainer.style.margin = 'auto';
-              //  this.plantbuttonContainer.style.position = 'absolute';
                this.plantbuttonContainer.style.width = '100%';
                this.plantbuttonContainer.style.height = '100%';
-               // this.plantbuttonContainer.style.transform = 'translate(120%, 120%)';
                 this.plantButton = document.createElement('button');
                 this.plantButton.style.height = '5.5rem';
                 this.plantButton.style.width = '5.5rem';
@@ -152,3 +153,5 @@ export class PopupWindow {
         });
     }
 }
+
+

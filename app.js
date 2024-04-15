@@ -29,10 +29,25 @@ app.get('/getAll', (request, response) => {
     .catch(err => console.log(err));
 });
 
+// search
+app.get('/getSearchResult/:searchTerm', (request, response) => {
+    const { searchTerm } = request.params;
+    const db = dbService.getDbServiceInstance();
+
+    const result = db.searchData(searchTerm);
+    
+    result
+    .then(data => response.json({data : data}))
+    .catch(err => console.log(err));
+});
+
 // update
 
 
 // delete
+
+
+
 
 
 app.listen(process.env.PORT, () => console.log('app is running'));

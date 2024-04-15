@@ -17,7 +17,6 @@ connection.connect((err) => {
   if (err) {
     console.log(err.message);
   }
-  // console.log('db ' + connection.state);
 });
 
 class DbService {
@@ -35,7 +34,22 @@ class DbService {
           resolve(results);
         })
       });
-      // console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  //http://localhost:5000/getSearchResult/karotte
+  async searchData(searchTerm) {
+    try {
+      const response = await new Promise((resolve, reject) => {
+        const query = "SELECT * FROM gardenapp.availableplants WHERE plant_link = ?;";
+        connection.query(query, [searchTerm], (err, results) => {
+          if (err) reject(new Error(err.message));
+          resolve(results);
+        })
+      });
       return response;
     } catch (error) {
       console.log(error);
