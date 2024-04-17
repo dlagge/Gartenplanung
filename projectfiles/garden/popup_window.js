@@ -120,38 +120,57 @@ export class PopupWindow {
         let tiles = new PopupTiles();
 
         search.addEventListener('input', function () {
-            //tiles.showFilteredTiles(this.value);
-
-            fetch('http://localhost:5000/getSearchResult/' + document.getElementById('inputsearch').value)
-            .then(response => response.json())
-            .then(data => this.createTiles(data['data']));
-
-            if (document.getElementById('popupTiles').childElementCount == 0) {
-                this.plantbuttonContainer = document.createElement('div');
-               this.plantbuttonContainer.style.width = '100%';
-               this.plantbuttonContainer.style.height = '100%';
-                this.plantButton = document.createElement('button');
-                this.plantButton.style.height = '5.5rem';
-                this.plantButton.style.width = '5.5rem';
-                this.plantButton.style.position = 'absolute';
-                this.plantButton.style.top = '50%';
-                this.plantButton.style.left = '50%';
-                this.plantButton.style.borderRadius = '50%';
-                this.plantButton.style.transform = 'translate(-50%, -50%)';
-                this.plantButton.style.borderWidth = '0.35rem';
-                this.plantButton.style.borderColor = 'white';
-                this.plantButton.style.borderStyle = 'solid';
-                this.plantButton.style.background = 'none';
-                this.plantButton.style.cursor = "pointer";
-                this.plantButton.innerHTML = '<img src="./images/plus.png" style="width:3rem; margin-top:0.3rem" />';
-                this.plantbuttonContainer.appendChild(this.plantButton);
-                document.getElementById('popupTiles').appendChild(this.plantbuttonContainer);
-                document.getElementById('popupTiles').style.position = 'relative'
-            } else if (this.plantButton != null && document.getElementById('popupTiles').childElementCount > 0) {
-                this.plantButtondiv.remove();
-            }
+            getFilteredData();
         });
+
+        search.addEventListener('click', function () {
+            getFilteredData();
+        });
+
+        function getFilteredData() {
+            if (document.getElementById('inputsearch').value == '') {
+                document.getElementById('popupTiles').innerHTML = '';
+
+                fetch('http://localhost:5000/getAll')
+                    .then(response => response.json())
+                    .then(data => tiles.createTiles(data['data']));
+            } else {
+                document.getElementById('popupTiles').innerHTML = '';
+
+                fetch('http://localhost:5000/getSearchResult/' + document.getElementById('inputsearch').value)
+                    .then(response => response.json())
+                    .then(data => tiles.createTiles(data['data']))
+                    .then(function () {
+                        let plantbuttonContainer = document.createElement('div');
+                        let plantButton = document.createElement('button');
+                        if (document.getElementById('popupTiles').childElementCount == 0) { 
+                            plantbuttonContainer.style.width = '100%';
+                            plantbuttonContainer.style.height = '100%';
+                            plantButton.style.height = '5.5rem';
+                            plantButton.style.width = '5.5rem';
+                            plantButton.style.position = 'absolute';
+                            plantButton.style.top = '50%';
+                            plantButton.style.left = '50%';
+                            plantButton.style.borderRadius = '50%';
+                            plantButton.style.transform = 'translate(-50%, -50%)';
+                            plantButton.style.borderWidth = '0.35rem';
+                            plantButton.style.borderColor = 'white';
+                            plantButton.style.borderStyle = 'solid';
+                            plantButton.style.background = 'none';
+                            plantButton.style.cursor = "pointer";
+                            plantButton.innerHTML = '<img src="./images/plus.png" style="width:3rem; margin-top:0.3rem" />';
+                            plantbuttonContainer.appendChild(plantButton);
+                            document.getElementById('popupTiles').appendChild(plantbuttonContainer);
+                            document.getElementById('popupTiles').style.position = 'relative'
+                        } else if (plantButton != null && document.getElementById('popupTiles').childElementCount > 0) {
+                            plantbuttonContainer.remove();
+                        }
+                    });
+            }
+        }
     }
+
+
 }
 
 

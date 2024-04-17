@@ -4,6 +4,7 @@ import { Model } from './model.js';
 export class PopupTiles {
 
     constructor() {
+        /*
         this.searcharr = [
             ['karotte', 'Rüebli', 'sonnig', 'A', 'Mittelzehrer', 'April-Juni', 'Antikrebs', 'Augengesundheit', 'Eisen 0,4mg', 'Magnesium 17mg', 'Kalzium 41mg', 'Fett 0.2g', 'Protein 1g'],
             ['karotte', 'Apfel', 'sonnig', 'C'],
@@ -11,9 +12,10 @@ export class PopupTiles {
             ['karotte', 'Erdbeere', 'Rosengewächse', 'C'],
             ['karotte', 'Fenchel', 'Kalium', 'A']
         ];
+        */
         fetch('http://localhost:5000/getAll')
             .then(response => response.json())
-            .then(data => this.createTiles(data['data']));;
+            .then(data => this.createTiles(data['data']));
     }
 
     createTiles(data) {
@@ -88,6 +90,7 @@ export class PopupTiles {
                 label.onclick = function () {
                     document.getElementById('inputsearch').value = this.innerHTML;
                     document.getElementById('inputsearch').style.backgroundSize = '0';
+                    document.getElementById('inputsearch').click();
                 };
 
                 img.onclick = function () {
