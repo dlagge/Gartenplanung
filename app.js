@@ -32,6 +32,7 @@ app.get('/getAll', (request, response) => {
 // search
 app.get('/getSearchResult/:searchTerm', (request, response) => {
     const { searchTerm } = request.params;
+
     const db = dbService.getDbServiceInstance();
 
     const result = db.searchData(searchTerm);

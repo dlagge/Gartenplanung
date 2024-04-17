@@ -44,8 +44,10 @@ class DbService {
   async searchData(searchTerm) {
     try {
       const response = await new Promise((resolve, reject) => {
-        const query = "SELECT * FROM gardenapp.availableplants WHERE plant_link = ?;";
-        connection.query(query, [searchTerm], (err, results) => {
+        const query = "SELECT * FROM gardenapp.availableplants WHERE plant_link LIKE ? OR plant_name LIKE ? OR plant_tags LIKE ?;";
+        const searchValue = `%${searchTerm}%`;
+
+        connection.query(query, [searchValue, searchValue, searchValue], (err, results) => {
           if (err) reject(new Error(err.message));
           resolve(results);
         })
