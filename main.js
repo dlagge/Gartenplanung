@@ -10,6 +10,7 @@ import { Model } from './projectfiles/garden/model';
 import { PopupButton } from './projectfiles/garden/popup_button';
 import { PopupWindow } from "./projectfiles/garden/popup_window";
 import { PlantPopup } from "./projectfiles/garden/plantpopup";
+import { FinishButton } from './projectfiles/garden/finish_button';
 
 
 //----------------------- Variablen -----------------------//
@@ -49,6 +50,8 @@ function createPopup() {
     popup.createPopup();
     plantpopup = new PlantPopup();
     plantpopup.createPopup();
+    let finishButton = new FinishButton();
+    finishButton.createButton();
 }
 
 export function createmodel(objfunc) {
@@ -137,9 +140,8 @@ function onPointerDown(event) {
 
     // Objekte in den Boden setzen
     const floorvec = new THREE.Vector3(0, 4, 0);
-    console.log(deleteButtonClicked);
+
     if (deleteButtonClicked) {
-        console.log("hi");
         intersectSavedArr.forEach(intersectelement => {
             objects = objects.filter(obj => obj !== intersectelement);
             scene.getScene().remove(intersectelement);

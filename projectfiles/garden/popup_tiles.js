@@ -62,7 +62,6 @@ export class PopupTiles {
             labels.style.height = '5rem';
             labels.style.overflow = 'auto';
             let plant_tags_arr = plant_tags.split(';');
-            console.log(plant_tags_arr);
 
             for (let i = 0; i < plant_tags_arr.length; i++) {
                 let label = document.createElement('button');
@@ -95,6 +94,7 @@ export class PopupTiles {
 
                 img.onclick = function () {
                     document.getElementById('popupWindowclose').click();
+                    document.getElementById('finishButton').style.display = 'block';
                     setTimeout(() => {
                         let model = new Model();
                         model.setModelName('../../models/' + plant_link + '.glb');

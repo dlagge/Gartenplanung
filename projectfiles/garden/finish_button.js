@@ -1,11 +1,7 @@
-import { createmodel, createmesh, getObjects, saveScene } from '../../main.js';
+import { createmodel, createmesh } from '../../main.js';
 import { Model } from './model.js';
 
 export class FinishButton {
-    constructor() {
-        this.createButton();
-    }
-
     createButton() {
         this.finishButton = document.createElement('button');
         this.finishButton.setAttribute("id", "finishButton");
@@ -42,11 +38,6 @@ export class FinishButton {
             createmodel('./models/empty.glb');
 
             this.style.display = 'none';
-            saveScene();
         };
-    }
-
-    getButton() {
-        return this.finishButton;
     }
 }
