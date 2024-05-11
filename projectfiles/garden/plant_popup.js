@@ -16,12 +16,12 @@ export class PlantPopup {
     createWindowStyle() {
         this.popupWindow = document.createElement('div');
         this.popupWindow.setAttribute('id', 'PlantPopupWindow');
-        this.popupWindow.style.display = 'none';
         this.popupWindow.style.position = 'absolute';
         this.popupWindow.style.padding = '1rem';
         this.popupWindow.style.paddingTop = '0.1rem';
         this.popupWindow.style.backgroundColor = '#f7f7f7';
         document.body.appendChild(this.popupWindow);
+
         // Test ob die Webseite auf dem Smartphone angeschaut wird oder nicht
         if (typeof screen.orientation === 'undefined') {
             this.popupWindow.style.left = '0%';
@@ -65,6 +65,7 @@ export class PlantPopup {
         this.closeButton.style.background = '#b3847a';
         this.closeButton.style.cursor = "pointer";
         this.closeButton.innerHTML = '<img src="./images/plus.png" style="width:1.6rem; margin-top:0.2rem; transform:rotate(45deg);" />';
+
         this.closeButton.onmouseover = function () {
             this.style.background = '#b4dbff';
             this.style.transition = '1s';
@@ -73,7 +74,7 @@ export class PlantPopup {
             this.style.background = '#b3847a';
         };
         this.closeButton.onclick = function () {
-            document.getElementById('PlantPopupWindow').style.display = 'none';
+            document.querySelectorAll('[id=PlantPopupWindow]').forEach(element=> element.remove());
         };
 
         this.popupWindow.appendChild(this.closeButton);
@@ -116,7 +117,6 @@ export class PlantPopup {
 
         let ernte = document.createTextNode('Voraussichtliche Ernte: ');
 
-
         h21.appendChild(ausges);
         this.ausges.appendChild(h21);
         this.ausges.appendChild(this.search);
@@ -152,7 +152,6 @@ export class PlantPopup {
                             return 'Dezember';
                     }
                 }
-
                 document.getElementById('ausgesdate').innerHTML = 'Voraussichtliche Ernte: ' + erntemonat();
             }
         })
@@ -192,7 +191,7 @@ export class PlantPopup {
             this.style.background = '#fb7f7f';
         };
         this.deleteButton.onpointerdown = function () {
-            document.getElementById('PlantPopupWindow').style.display = 'none';
+            document.querySelectorAll('[id=PlantPopupWindow]').forEach(element=> element.remove());
             clickedDeleteButton(true);
         };
     }

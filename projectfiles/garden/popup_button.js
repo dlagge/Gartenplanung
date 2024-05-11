@@ -1,5 +1,6 @@
 import { createmodel, createmesh } from '../../main.js';
 import { Model } from './model.js';
+import { PopupWindow } from './popup_window.js';
 
 export class PopupButton {
     constructor() {
@@ -20,7 +21,7 @@ export class PopupButton {
         this.popupButton.style.borderStyle = 'solid';
         this.popupButton.style.background = 'none';
         this.popupButton.style.cursor = "pointer";
-        this.popupButton.innerHTML = '<img src="./images/plus.png" style="width:3rem; margin-top:0.3rem" />';
+        this.popupButton.innerHTML = '<img id="popupButton" src="./images/plus.png" style="width:3rem; margin-top:0.3rem" />';
         document.body.appendChild(this.popupButton);
         this.popupButton.onmouseover = function () {
             this.style.transform = 'rotate(45deg)';
@@ -38,8 +39,13 @@ export class PopupButton {
             });
             createmodel('./models/empty.glb');
 
-            this.style.display = 'none';
-            document.getElementById('popupWindow').style.display = 'block';
+            let popup = new PopupWindow();
+            popup.createPopup();
+            document.getElementById('popupButton').remove();
+            let finishButton = document.getElementById('finishButton');
+            if(finishButton) {
+                finishButton.remove();
+            }
         };
     }
 

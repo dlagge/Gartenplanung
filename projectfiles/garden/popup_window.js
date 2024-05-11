@@ -1,4 +1,5 @@
 import { PopupTiles } from "./popup_tiles";
+import { PopupButton } from "./popup_button";
 
 export class PopupWindow {
 
@@ -12,7 +13,6 @@ export class PopupWindow {
     createWindowStyle() {
         this.popupWindow = document.createElement('div');
         this.popupWindow.setAttribute('id', 'popupWindow');
-        this.popupWindow.style.display = 'none';
         this.popupWindow.style.position = 'absolute';
         this.popupWindow.style.padding = '1rem';
         this.popupWindow.style.paddingTop = '0.1rem';
@@ -64,8 +64,9 @@ export class PopupWindow {
             this.style.background = '#b3847a';
         };
         this.closeButton.onclick = function () {
-            document.getElementById('popupButton').style.display = 'block';
-            document.getElementById('popupWindow').style.display = 'none';
+            let popupButton = new PopupButton();
+            popupButton.getButton();
+            document.getElementById('popupWindow').remove();
         };
 
         this.popupWindow.appendChild(this.closeButton);
@@ -143,7 +144,7 @@ export class PopupWindow {
                     .then(function () {
                         let plantbuttonContainer = document.createElement('div');
                         let plantButton = document.createElement('button');
-                        if (document.getElementById('popupTiles').childElementCount == 0) { 
+                        if (document.getElementById('popupTiles').childElementCount == 0) {
                             plantbuttonContainer.style.width = '100%';
                             plantbuttonContainer.style.height = '100%';
                             plantButton.style.height = '5.5rem';
@@ -169,8 +170,6 @@ export class PopupWindow {
             }
         }
     }
-
-
 }
 
 

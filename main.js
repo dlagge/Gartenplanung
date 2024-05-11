@@ -8,10 +8,7 @@ import { Lights } from './projectfiles/garden/lights';
 import { Geometry } from './projectfiles/garden/geometry';
 import { Model } from './projectfiles/garden/model';
 import { PopupButton } from './projectfiles/garden/popup_button';
-import { PopupWindow } from "./projectfiles/garden/popup_window";
-import { PlantPopup } from "./projectfiles/garden/plantpopup";
-import { FinishButton } from './projectfiles/garden/finish_button';
-
+import { PlantPopup } from "./projectfiles/garden/plant_popup";
 
 //----------------------- Variablen -----------------------//
 
@@ -23,7 +20,9 @@ let ground_length = 150;
 let camera, scene, renderer, ground, lights, mesh, raycaster, pointer, obj, plantpopup;
 let deleteButtonClicked = false;
 let objects = [];
+let plantobjects = [];
 let intersectSavedArr = [];
+let dbobjects = [];
 
 
 //----------------------- Funktionsaufrufe -----------------------//
@@ -46,12 +45,6 @@ function init() {
 function createPopup() {
     let popupButton = new PopupButton();
     popupButton.getButton();
-    let popup = new PopupWindow();
-    popup.createPopup();
-    plantpopup = new PlantPopup();
-    plantpopup.createPopup();
-    let finishButton = new FinishButton();
-    finishButton.createButton();
 }
 
 export function createmodel(objfunc) {
@@ -65,6 +58,16 @@ export function createmesh(meshfunc) {
 
 export function clickedDeleteButton(click) {
     deleteButtonClicked = click;
+}
+
+export function getPlantObjects() {
+    objects.forEach(obj => {
+        if (obj.children.length !== 0) {
+            plantobjects.push([obj.children[0].name, obj.position.x, obj.position.y, obj.position.z]);
+        }
+    });
+    console.log(plantobjects);
+    return plantobjects;
 }
 
 // Erstellt: Licht, Boden, Modelle
@@ -83,6 +86,21 @@ function createGarden() {
     });
     createmodel('./models/empty.glb');
 
+
+    //Beispiel für Datenbankspeicherung:
+    // Modelnahme
+    // Position: x, y, z
+    let model1 = new Model();
+    model1.setModelName('../../models/karotte.glb');
+    model1.getModel().load(model1.getModelName(), (gltf) => {
+        let mesh = gltf.scene;
+        mesh.position.set(1.2158876441404516, 2, 37.34674541521275);
+        scene.getScene().add(mesh);
+    });
+
+
+
+
     scene.getScene().add(
         ground.getPlane(),
         lights.getAmbientLight(),
@@ -100,12 +118,17 @@ function createGarden() {
 }
 
 // Der Raycaster baut ein Mapping zwischen Mauszeiger und Position auf der Gartenfläche auf.
-// Während dem Hovering wird das Objekt mit runder Schattenfläche angezeigt
 function onPointerMove(event) {
     pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
     raycaster.setFromCamera(pointer, camera.getCamera());
     const intersects = raycaster.intersectObjects(objects, true);
-
+    
+    if (event.srcElement.id == "finishButton" || event.srcElement.id == "popupButton") {
+        mesh.visible = false;
+    } else {
+        mesh.visible = true;
+    }
+  
     if (intersects.length > 0 && !event.shiftKey) {
         const intersect = intersects[0];
         if (intersects.length > 1) {
@@ -125,7 +148,6 @@ function onPointerMove(event) {
                 });
             });
         }
-
         // Model auf dem Boden anzeigen
         mesh.position.copy(intersect.point).add(intersect.face.normal);
     }
@@ -167,10 +189,10 @@ function onPointerDown(event) {
                     }
 
                     if (model_placed.getModelName() === './models/empty.glb' && object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
+                        let plantpopup = new PlantPopup();
+                        plantpopup.createPopup();
                         document.getElementById('PlantPopupTitle').innerHTML = intersect.object.name;
-                        document.getElementById('PlantPopupWindow').style.display = 'block';
                         intersectSavedArr.push(object);
-                        console.log(intersectSavedArr);
                     }
                 });
             });

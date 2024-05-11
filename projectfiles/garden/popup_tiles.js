@@ -1,5 +1,6 @@
 import { createmodel, createmesh } from '../../main.js';
 import { Model } from './model.js';
+import { FinishButton } from './finish_button';
 
 export class PopupTiles {
 
@@ -94,7 +95,8 @@ export class PopupTiles {
 
                 img.onclick = function () {
                     document.getElementById('popupWindowclose').click();
-                    document.getElementById('finishButton').style.display = 'block';
+                    let finishButton = new FinishButton();
+                    finishButton.createButton();
                     setTimeout(() => {
                         let model = new Model();
                         model.setModelName('../../models/' + plant_link + '.glb');

@@ -1,4 +1,4 @@
-import { createmodel, createmesh } from '../../main.js';
+import { createmodel, createmesh, getPlantObjects } from '../../main.js';
 import { Model } from './model.js';
 
 export class FinishButton {
@@ -9,7 +9,6 @@ export class FinishButton {
         this.finishButton.style.left = '50%';
         this.finishButton.style.top = '5rem';
         this.finishButton.style.height = '5.5rem';
-        this.finishButton.style.display = 'none';
         this.finishButton.style.borderRadius = '1rem';
         this.finishButton.style.borderWidth = '0.35rem';
         this.finishButton.style.borderColor = 'white';
@@ -37,7 +36,9 @@ export class FinishButton {
             });
             createmodel('./models/empty.glb');
 
-            this.style.display = 'none';
+            document.getElementById('finishButton').remove();
+            getPlantObjects();
+
         };
     }
 }
