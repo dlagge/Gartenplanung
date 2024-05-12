@@ -104,7 +104,8 @@ function createGarden() {
     scene.getScene().add(
         ground.getPlane(),
         lights.getAmbientLight(),
-        lights.getDirLight()
+        lights.getDirLight1(),
+        lights.getDirLight2(),
     );
 
     objects.push(ground.getPlane());
