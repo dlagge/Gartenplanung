@@ -12,7 +12,6 @@ import { PlantPopup } from "./projectfiles/garden/plant_popup";
 
 //----------------------- Variablen -----------------------//
 
-let skycolor = 0xb4dbff;
 let selectorcolor = 0xb3847a;
 let ground_width = 150;
 let ground_length = 150;
@@ -121,13 +120,13 @@ function onPointerMove(event) {
     pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
     raycaster.setFromCamera(pointer, camera.getCamera());
     const intersects = raycaster.intersectObjects(objects, true);
-    
+
     if (event.srcElement.id == "finishButton" || event.srcElement.id == "popupButton") {
         mesh.visible = false;
     } else {
         mesh.visible = true;
     }
-  
+
     if (intersects.length > 0 && !event.shiftKey) {
         const intersect = intersects[0];
         if (intersects.length > 1) {
@@ -200,6 +199,9 @@ function onPointerDown(event) {
                 let mesh_placed = gltf.scene;
                 mesh_placed.position.copy(intersect.point).add(intersect.face.normal);
                 mesh_placed.position.sub(floorvec);
+                if (event.srcElement.id == "finishButton" || event.srcElement.id == "popupButton") {
+                    mesh_placed.setModelName('../../models/empty.glb');
+                }
                 scene.getScene().add(mesh_placed);
                 objects.push(mesh_placed);
             });

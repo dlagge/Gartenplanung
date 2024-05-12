@@ -8,7 +8,7 @@ export class Controls {
         this.controls = new OrbitControls(this.camera, this.rendDom);
         this.controls.mouseButtons = { LEFT: '', MIDDLE: THREE.MOUSE.RIGHT, RIGHT: THREE.MOUSE.RIGHT };
         this.controls.minDistance = 50;
-        this.controls.maxDistance = 800;
+        this.controls.maxDistance = 400;
         this.controls.maxPolarAngle = Math.PI / 2.5;
         this.controls.zoomToCursor = true;
         this.controls.enableZoom = true;
