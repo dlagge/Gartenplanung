@@ -13,7 +13,6 @@ import { PlantPopup } from "./projectfiles/garden/plant_popup";
 //----------------------- Variablen -----------------------//
 
 let skycolor = 0xb4dbff;
-let groundcolor = 0xedae87;
 let selectorcolor = 0xb3847a;
 let ground_width = 150;
 let ground_length = 150;
@@ -22,7 +21,6 @@ let deleteButtonClicked = false;
 let objects = [];
 let plantobjects = [];
 let intersectSavedArr = [];
-let dbobjects = [];
 
 
 //----------------------- Funktionsaufrufe -----------------------//
@@ -36,7 +34,7 @@ createGarden();
 // Erstellt: Kamera, Szene, Renderer, Bewegungskontroller
 function init() {
     camera = new Camera();
-    scene = new Scene(skycolor);
+    scene = new Scene();
     renderer = new Renderer();
     new Controls(camera.getCamera(), renderer.getRenderer().domElement);
 }
@@ -73,8 +71,8 @@ export function getPlantObjects() {
 // Erstellt: Licht, Boden, Modelle
 function createGarden() {
     lights = new Lights();
-    ground = new Geometry(groundcolor);
-    ground.createPlane(ground_width, ground_length, groundcolor);
+    ground = new Geometry();
+    ground.createPlane(ground_width, ground_length);
     raycaster = new THREE.Raycaster();
     pointer = new THREE.Vector2();
 
@@ -105,7 +103,7 @@ function createGarden() {
         ground.getPlane(),
         lights.getAmbientLight(),
         lights.getDirLight1(),
-        lights.getDirLight2(),
+        lights.getDirLight2()
     );
 
     objects.push(ground.getPlane());

@@ -1,12 +1,7 @@
 import * as THREE from 'three';
 
 export class Geometry {
-    createPlane(width, length, planecolor) {
-        /*
-        let geometry = new THREE.BoxGeometry(width, length, 10);
-        geometry.rotateX(- Math.PI / 2);
-        this.plane = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ visible: true, color: planecolor, opacity:0.2 }));
-        */
+    createPlane(width, length) {
         let geometry = new THREE.BoxGeometry(width, length, 10).toNonIndexed();
         geometry.rotateX(- Math.PI / 2);
         const material = new THREE.MeshBasicMaterial({ vertexColors: true });
