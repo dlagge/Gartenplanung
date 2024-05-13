@@ -24,10 +24,26 @@ class DbService {
     return instance ? instance : new DbService();
   }
 
-  async getAllData() {
+  async getAllAvailablePlants() {
     try {
       const response = await new Promise((resolve, reject) => {
         const query = "SELECT * FROM gardenapp.availableplants;";
+
+        connection.query(query, (err, results) => {
+          if (err) reject(new Error(err.message));
+          resolve(results);
+        })
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getAllPositionedPlants() {
+    try {
+      const response = await new Promise((resolve, reject) => {
+        const query = "SELECT * FROM gardenapp.plantpositions;";
 
         connection.query(query, (err, results) => {
           if (err) reject(new Error(err.message));
@@ -58,34 +74,37 @@ class DbService {
     }
   }
 
+  /*
+  http://localhost:5000/addPlantArray
+  {
+    "plant_link": "gruenkohl",
+    "x_position" : 1.2,
+    "y_position" : 2.2,
+    "z_position" : 3
+  }
+  */
   async insertPlantPosition(plant_link, x_position, y_position, z_position) {
     try {
       const insertId = await new Promise((resolve, reject) => {
         const query = "INSERT INTO gardenapp.plantpositions(plant_link,x_position,y_position,z_position) VALUES (?,?,?,?);";
-  
+
         connection.query(query, [plant_link, x_position, y_position, z_position], (err, result) => {
           if (err) reject(new Error(err.message));
           resolve(result.insertId);
         })
       });
       return {
-        id : insertId,
-        plant_link : plant_link,
-        x_position : x_position,
-        y_position : y_position,
-        z_position : z_position,
+        id: insertId,
+        plant_link: plant_link,
+        x_position: x_position,
+        y_position: y_position,
+        z_position: z_position,
       };
     } catch (error) {
       console.log(error);
     }
   }
 }
-
-
-
-
-
-
 
 module.exports = DbService;
 

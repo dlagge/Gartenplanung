@@ -44,11 +44,11 @@ function createPopup() {
     popupButton.getButton();
 }
 
-export function createmodel(objfunc) {
+export function createModel(objfunc) {
     obj = objfunc;
 }
 
-export function createmesh(meshfunc) {
+export function createMesh(meshfunc) {
     scene.getScene().add(meshfunc);
     mesh = meshfunc;
 }
@@ -57,13 +57,20 @@ export function clickedDeleteButton(click) {
     deleteButtonClicked = click;
 }
 
+export function setObjects(val) {
+    objects = val;
+}
+
+export function pushObject(val) {
+    objects.push(val);
+}
+
 export function getPlantObjects() {
     objects.forEach(obj => {
         if (obj.children.length !== 0) {
             plantobjects.push([obj.children[0].name, obj.position.x, obj.position.y, obj.position.z]);
         }
     });
-    console.log(plantobjects);
     return plantobjects;
 }
 
@@ -79,9 +86,9 @@ function createGarden() {
     model.setModelName('../../models/empty.glb');
     model.getModel().load(model.getModelName(), (gltf) => {
         let mesh = gltf.scene;
-        createmesh(mesh);
+        createMesh(mesh);
     });
-    createmodel('./models/empty.glb');
+    createModel('./models/empty.glb');
 
 
     //Beispiel für Datenbankspeicherung:

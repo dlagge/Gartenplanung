@@ -12,17 +12,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
 
-
-// create
-app.post('/insert', (request, response) => {
-
-});
-
 // read
-app.get('/getAll', (request, response) => {
+app.get('/getAllAvailablePlants', (request, response) => {
     const db = dbService.getDbServiceInstance();
 
-    const result = db.getAllData();
+    const result = db.getAllAvailablePlants();
+    
+    result
+    .then(data => response.json({data : data}))
+    .catch(err => console.log(err));
+});
+
+app.get('/getAllPositionedPlants', (request, response) => {
+    const db = dbService.getDbServiceInstance();
+
+    const result = db.getAllPositionedPlants();
     
     result
     .then(data => response.json({data : data}))
@@ -42,7 +46,7 @@ app.get('/getSearchResult/:searchTerm', (request, response) => {
     .catch(err => console.log(err));
 });
 
-// insert
+// create
 app.post("/addPlantArray", (request, response) => {
     const { plant_link, x_position, y_position, z_position } = request.body;
     const db = dbService.getDbServiceInstance();
@@ -58,9 +62,6 @@ app.post("/addPlantArray", (request, response) => {
 
 
 // delete
-
-
-
 
 
 app.listen(process.env.PORT, () => console.log('app is running'));

@@ -132,7 +132,7 @@ export class PopupWindow {
             if (document.getElementById('inputsearch').value == '') {
                 document.getElementById('popupTiles').innerHTML = '';
 
-                fetch('http://localhost:5000/getAll')
+                fetch('http://localhost:5000/getAllAvailablePlants')
                     .then(response => response.json())
                     .then(data => tiles.createTiles(data['data']));
             } else {

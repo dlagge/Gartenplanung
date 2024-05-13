@@ -1,4 +1,4 @@
-import { createmodel, createmesh } from '../../main.js';
+import { createModel, createMesh } from '../../main.js';
 import { Model } from './model.js';
 import { PopupWindow } from './popup_window.js';
 
@@ -35,9 +35,9 @@ export class PopupButton {
             model.setModelName('../../models/empty.glb');
             model.getModel().load(model.getModelName(), (gltf) => {
                 let mesh = gltf.scene;
-                createmesh(mesh);
+                createMesh(mesh);
             });
-            createmodel('./models/empty.glb');
+            createModel('./models/empty.glb');
 
             let popup = new PopupWindow();
             popup.createPopup();

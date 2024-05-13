@@ -1,4 +1,4 @@
-import { createmodel, createmesh } from '../../main.js';
+import { createModel, createMesh } from '../../main.js';
 import { Model } from './model.js';
 import { FinishButton } from './finish_button';
 
@@ -14,7 +14,7 @@ export class PopupTiles {
             ['karotte', 'Fenchel', 'Kalium', 'A']
         ];
         */
-        fetch('http://localhost:5000/getAll')
+        fetch('http://localhost:5000/getAllAvailablePlants')
             .then(response => response.json())
             .then(data => this.createTiles(data['data']));
     }
@@ -102,9 +102,9 @@ export class PopupTiles {
                         model.setModelName('../../models/' + plant_link + '.glb');
                         model.getModel().load(model.getModelName(), (gltf) => {
                             let mesh = gltf.scene;
-                            createmesh(mesh);
+                            createMesh(mesh);
                         });
-                        createmodel('./models/' + plant_link + '.glb');
+                        createModel('./models/' + plant_link + '.glb');
                     }, 1);
                 }
             }

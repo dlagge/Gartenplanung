@@ -1,4 +1,4 @@
-import { createmodel, createmesh, getPlantObjects } from '../../main.js';
+import { createModel, createMesh, getPlantObjects, setObjects, pushObject } from '../../main.js';
 import { Model } from './model.js';
 
 export class FinishButton {
@@ -32,15 +32,49 @@ export class FinishButton {
             model.setModelName('../../models/empty.glb');
             model.getModel().load(model.getModelName(), (gltf) => {
                 let mesh = gltf.scene;
-                createmesh(mesh);
+                createMesh(mesh);
             });
-            createmodel('./models/empty.glb');
+            createModel('./models/empty.glb');
 
             document.getElementById('finishButton').remove();
 
-            
-            getPlantObjects();
+            let plantobjects = getPlantObjects();
 
+            plantobjects.forEach(plantobj => {
+                fetch('http://localhost:5000/addPlantArray', {
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    method: 'POST',
+
+                    body: JSON.stringify({
+                        plant_link: plantobj[0],
+                        x_position: plantobj[1],
+                        y_position: plantobj[2],
+                        z_position: plantobj[3]
+                    })
+                })
+            });
+
+            setObjects([]);
+
+            fetch('http://localhost:5000/getAllPositionedPlants')
+                .then(response => response.json())
+                .then(data => seedPlants(data['data']));
+
+            function seedPlants(data) {
+                data.forEach(function ({ plant_link, x_position, y_position, z_position }) {
+                    let model = new Model();
+                    model.setModelName('../../models/' + plant_link + '.glb');
+                    model.getModel().load(model.getModelName(), (gltf) => {
+                        let mesh = gltf.scene;
+                        mesh.position.set(x_position, y_position, z_position);
+                        createMesh(mesh);
+                       // pushObject(mesh);
+                    });
+                  //  createModel('./models/' + plant_link + '.glb');
+                });
+            }
         };
     }
 }
