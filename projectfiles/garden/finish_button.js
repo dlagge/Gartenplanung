@@ -37,6 +37,8 @@ export class FinishButton {
             createmodel('./models/empty.glb');
 
             document.getElementById('finishButton').remove();
+
+            
             getPlantObjects();
 
         };

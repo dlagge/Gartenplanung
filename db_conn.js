@@ -57,7 +57,35 @@ class DbService {
       console.log(error);
     }
   }
+
+  async insertPlantPosition(plant_link, x_position, y_position, z_position) {
+    try {
+      const insertId = await new Promise((resolve, reject) => {
+        const query = "INSERT INTO gardenapp.plantpositions(plant_link,x_position,y_position,z_position) VALUES (?,?,?,?);";
+  
+        connection.query(query, [plant_link, x_position, y_position, z_position], (err, result) => {
+          if (err) reject(new Error(err.message));
+          resolve(result.insertId);
+        })
+      });
+      return {
+        id : insertId,
+        plant_link : plant_link,
+        x_position : x_position,
+        y_position : y_position,
+        z_position : z_position,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
+
+
+
+
+
+
 
 module.exports = DbService;
 

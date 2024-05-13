@@ -42,6 +42,18 @@ app.get('/getSearchResult/:searchTerm', (request, response) => {
     .catch(err => console.log(err));
 });
 
+// insert
+app.post("/addPlantArray", (request, response) => {
+    const { plant_link, x_position, y_position, z_position } = request.body;
+    const db = dbService.getDbServiceInstance();
+    
+    const result = db.insertPlantPosition(plant_link, x_position, y_position, z_position);
+
+    result
+    .then(data => response.json({ data: data}))
+    .catch(err => console.log(err));
+});
+
 // update
 
 

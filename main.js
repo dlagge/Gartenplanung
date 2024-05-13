@@ -200,7 +200,7 @@ function onPointerDown(event) {
                 mesh_placed.position.copy(intersect.point).add(intersect.face.normal);
                 mesh_placed.position.sub(floorvec);
                 if (event.srcElement.id == "finishButton" || event.srcElement.id == "popupButton") {
-                    mesh_placed.setModelName('../../models/empty.glb');
+                    mesh_placed = null;
                 }
                 scene.getScene().add(mesh_placed);
                 objects.push(mesh_placed);
