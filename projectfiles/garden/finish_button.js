@@ -1,4 +1,4 @@
-import { createModel, createMesh, getPlantObjects, setObjects, pushObject } from '../../main.js';
+import { createModel, createMesh, getPlantObjects, setObjects, pushObject, getPositionedPlants } from '../../main.js';
 import { Model } from './model.js';
 
 export class FinishButton {
@@ -57,12 +57,13 @@ export class FinishButton {
             });
 
             setObjects([]);
-
+            getPositionedPlants();
+            /*
             fetch('http://localhost:5000/getAllPositionedPlants')
                 .then(response => response.json())
                 .then(data => seedPlants(data['data']));
 
-            function seedPlants(data) {
+            function seedPlants(data) {*
                 data.forEach(function ({ plant_link, x_position, y_position, z_position }) {
                     let model = new Model();
                     model.setModelName('../../models/' + plant_link + '.glb');
@@ -75,6 +76,7 @@ export class FinishButton {
                   //  createModel('./models/' + plant_link + '.glb');
                 });
             }
+            */
         };
     }
 }

@@ -90,21 +90,6 @@ function createGarden() {
     });
     createModel('./models/empty.glb');
 
-
-    //Beispiel für Datenbankspeicherung:
-    // Modelnahme
-    // Position: x, y, z
-    let model1 = new Model();
-    model1.setModelName('../../models/karotte.glb');
-    model1.getModel().load(model1.getModelName(), (gltf) => {
-        let mesh = gltf.scene;
-        mesh.position.set(1.2158876441404516, 2, 37.34674541521275);
-        scene.getScene().add(mesh);
-    });
-
-
-
-
     scene.getScene().add(
         ground.getPlane(),
         lights.getAmbientLight(),
@@ -120,6 +105,27 @@ function createGarden() {
     window.addEventListener('resize', onWindowResize, false);
 
     animate();
+    getPositionedPlants();
+}
+
+export function getPositionedPlants() {
+    fetch('http://localhost:5000/getAllPositionedPlants')
+        .then(response => response.json())
+        .then(data => seedPlants(data['data']));
+
+    function seedPlants(data) {
+        data.forEach(function ({ plant_link, x_position, y_position, z_position }) {
+            let model = new Model();
+            model.setModelName('../../models/' + plant_link + '.glb');
+            model.getModel().load(model.getModelName(), (gltf) => {
+                let mesh = gltf.scene;
+                mesh.position.set(x_position, y_position, z_position);
+                createMesh(mesh);
+                // pushObject(mesh);
+            });
+            //  createModel('./models/' + plant_link + '.glb');
+        });
+    }
 }
 
 // Der Raycaster baut ein Mapping zwischen Mauszeiger und Position auf der Gartenfläche auf.
@@ -134,6 +140,7 @@ function onPointerMove(event) {
         mesh.visible = true;
     }
 
+    /*
     if (intersects.length > 0 && !event.shiftKey) {
         const intersect = intersects[0];
         if (intersects.length > 1) {
@@ -153,9 +160,17 @@ function onPointerMove(event) {
                 });
             });
         }
-        // Model auf dem Boden anzeigen
+        
+        
+    }
+    */
+    // Model auf dem Boden anzeigen
+    if (intersects.length > 0) {
+        const intersect = intersects[0];
         mesh.position.copy(intersect.point).add(intersect.face.normal);
     }
+
+
 }
 
 // Objekte werden auf die Gartenfläche gesetzt, wenn es einen Linksmausklick gibt
@@ -168,6 +183,7 @@ function onPointerDown(event) {
     // Objekte in den Boden setzen
     const floorvec = new THREE.Vector3(0, 4, 0);
 
+    /*
     if (deleteButtonClicked) {
         intersectSavedArr.forEach(intersectelement => {
             objects = objects.filter(obj => obj !== intersectelement);
@@ -175,7 +191,48 @@ function onPointerDown(event) {
         });
         deleteButtonClicked = false;
     }
+    */
 
+    /*
+        if (intersects.length > 0 && event.button === 0) {
+            const intersect = intersects[0];
+    
+            // Model auf Boden platzieren
+            let model_placed = new Model();
+            model_placed.setModelName(obj);
+    
+            if (intersects.length > 1) {
+    
+                objects.forEach(object => {
+                    intersects.forEach(intersect => {
+                        if (model_placed.getModelName() !== './models/empty.glb' && object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
+                            objects = objects.filter(obj => obj !== object);
+                            scene.getScene().remove(object);
+                        }
+    
+                        if (model_placed.getModelName() === './models/empty.glb' && object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
+                            let plantpopup = new PlantPopup();
+                            plantpopup.createPopup();
+                            document.getElementById('PlantPopupTitle').innerHTML = intersect.object.name;
+                            intersectSavedArr.push(object);
+                        }
+                    });
+                });
+            } else {
+                model_placed.getModel().load(model_placed.getModelName(), (gltf) => {
+                    let mesh_placed = gltf.scene;
+                    mesh_placed.position.copy(intersect.point).add(intersect.face.normal);
+                    mesh_placed.position.sub(floorvec);
+                    if (event.srcElement.id == "finishButton" || event.srcElement.id == "popupButton") {
+                        mesh_placed = null;
+                    }
+                    scene.getScene().add(mesh_placed);
+                    objects.push(mesh_placed);
+                });
+            }
+        }
+    
+        */
 
     if (intersects.length > 0 && event.button === 0) {
         const intersect = intersects[0];
@@ -184,35 +241,17 @@ function onPointerDown(event) {
         let model_placed = new Model();
         model_placed.setModelName(obj);
 
-        if (intersects.length > 1) {
+        model_placed.getModel().load(model_placed.getModelName(), (gltf) => {
+            let mesh_placed = gltf.scene;
+            mesh_placed.position.copy(intersect.point).add(intersect.face.normal);
+            mesh_placed.position.sub(floorvec);
+            if (event.srcElement.id == "finishButton" || event.srcElement.id == "popupButton") {
+                mesh_placed = null;
+            }
+            scene.getScene().add(mesh_placed);
+            objects.push(mesh_placed);
+        });
 
-            objects.forEach(object => {
-                intersects.forEach(intersect => {
-                    if (model_placed.getModelName() !== './models/empty.glb' && object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
-                        objects = objects.filter(obj => obj !== object);
-                        scene.getScene().remove(object);
-                    }
-
-                    if (model_placed.getModelName() === './models/empty.glb' && object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
-                        let plantpopup = new PlantPopup();
-                        plantpopup.createPopup();
-                        document.getElementById('PlantPopupTitle').innerHTML = intersect.object.name;
-                        intersectSavedArr.push(object);
-                    }
-                });
-            });
-        } else {
-            model_placed.getModel().load(model_placed.getModelName(), (gltf) => {
-                let mesh_placed = gltf.scene;
-                mesh_placed.position.copy(intersect.point).add(intersect.face.normal);
-                mesh_placed.position.sub(floorvec);
-                if (event.srcElement.id == "finishButton" || event.srcElement.id == "popupButton") {
-                    mesh_placed = null;
-                }
-                scene.getScene().add(mesh_placed);
-                objects.push(mesh_placed);
-            });
-        }
     }
 }
 
