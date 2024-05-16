@@ -30,6 +30,7 @@ export class FinishButton {
         this.finishButton.onclick = function () {
             document.removeEventListener('pointermove', onPointerMove);
             document.removeEventListener('pointerdown', onPointerDown);
+            /*
             let model = new Model();
             model.setModelName('../../models/empty.glb');
             model.getModel().load(model.getModelName(), (gltf) => {
@@ -37,6 +38,7 @@ export class FinishButton {
                 createMesh(mesh);
             });
             createModel('./models/empty.glb');
+            */
 
             document.getElementById('finishButton').remove();
 

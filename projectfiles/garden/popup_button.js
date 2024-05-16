@@ -31,6 +31,7 @@ export class PopupButton {
             this.style.transform = 'rotate(0deg)';
         };
         this.popupButton.onclick = function () {
+            /*
             let model = new Model();
             model.setModelName('../../models/empty.glb');
             model.getModel().load(model.getModelName(), (gltf) => {
@@ -38,6 +39,7 @@ export class PopupButton {
                 createMesh(mesh);
             });
             createModel('./models/empty.glb');
+            */
 
             let popup = new PopupWindow();
             popup.createPopup();

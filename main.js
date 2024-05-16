@@ -16,11 +16,14 @@ let selectorcolor = 0xb3847a;
 let ground_width = 150;
 let ground_length = 150;
 let camera, scene, renderer, ground, lights, mesh, raycaster, pointer, obj, plantpopup;
-let deleteButtonClicked = false;
-let objects = [];
-let plantobjects = [];
-let intersectSavedArr = [];
 
+let dbobjects = [];
+
+// Three Js Objekte, welche visuell dargestellt werden, wenn man sie setzt
+let objects = [];
+
+// Array mit bestimmten Daten von dem objects array [Name, position x, position y, position z]
+let plantobjects = [];
 
 //----------------------- Funktionsaufrufe -----------------------//
 
@@ -82,14 +85,6 @@ function createGarden() {
     raycaster = new THREE.Raycaster();
     pointer = new THREE.Vector2();
 
-    let model = new Model();
-    model.setModelName('../../models/empty.glb');
-    model.getModel().load(model.getModelName(), (gltf) => {
-        let mesh = gltf.scene;
-        createMesh(mesh);
-    });
-    createModel('./models/empty.glb');
-
     scene.getScene().add(
         ground.getPlane(),
         lights.getAmbientLight(),
@@ -98,16 +93,12 @@ function createGarden() {
     );
 
     objects.push(ground.getPlane());
-
-    // listeners
-    // document.addEventListener('pointermove', onPointerMove);
-    // document.addEventListener('pointerdown', onPointerDown);
     window.addEventListener('resize', onWindowResize, false);
-
-    animate();
     getPositionedPlants();
+    animate();
 }
 
+// Alle gesetzten Pflanzen von der Datenbank auf die Oberfläche setzen
 export function getPositionedPlants() {
     fetch('http://localhost:5000/getAllPositionedPlants')
         .then(response => response.json())
@@ -120,29 +111,36 @@ export function getPositionedPlants() {
             model.getModel().load(model.getModelName(), (gltf) => {
                 let mesh = gltf.scene;
                 mesh.position.set(x_position, y_position, z_position);
+                dbobjects.push(mesh);
                 createMesh(mesh);
-                // pushObject(mesh);
             });
-            //  createModel('./models/' + plant_link + '.glb');
         });
     }
 }
 
-// Der Raycaster baut ein Mapping zwischen Mauszeiger und Position auf der Gartenfläche auf.
+// Der Raycaster baut ein Mapping zwischen Mauszeiger und Position auf der Gartenfläche auf, während man den Mauszeiger bewegt.
 export function onPointerMove(event) {
+
+    // Mauszeiger wird auf die 3D Fläche projekziert
     pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
     raycaster.setFromCamera(pointer, camera.getCamera());
     const intersects = raycaster.intersectObjects(objects, true);
 
-    if (event.srcElement.id == "finishButton" || event.srcElement.id == "popupButton") {
-        mesh.visible = false;
-    } else {
+    /*
+     Wenn man sich mit der Maus oberhalb des Speichern- oder Hinzufüge-Button befindet, darf das Objekt nicht angezeigt werden,
+     damit es nicht gesetzt wird, wenn man auf den Button klickt.
+    */
+    if (event.srcElement.id == "garden") {
         mesh.visible = true;
+    } else {
+        mesh.visible = false;
     }
 
-    /*
     if (intersects.length > 0 && !event.shiftKey) {
         const intersect = intersects[0];
+        mesh.position.copy(intersect.point).add(intersect.face.normal);
+
+        // Wenn man sich mit dem Mauszeiger oberhalb des Objekt befindet, wird er dunkel markiert.
         if (intersects.length > 1) {
             intersects.forEach(intersect => {
                 intersect.object.traverse((child) => {
@@ -151,7 +149,13 @@ export function onPointerMove(event) {
                     }
                 });
             });
-        } else {
+        }
+
+        /* 
+        Wenn man sich mit dem Mauszeiger nicht oberhalb eines Objektes befindet, soll es nicht dunkel markiert werden,
+        bzw. es soll weiss bleiben.
+        */
+        else {
             objects.forEach(obj => {
                 obj.traverse((child) => {
                     if (child.material && obj.name !== '') {
@@ -160,79 +164,19 @@ export function onPointerMove(event) {
                 });
             });
         }
-        
-        
     }
-    */
-    // Model auf dem Boden anzeigen
-    if (intersects.length > 0) {
-        const intersect = intersects[0];
-        mesh.position.copy(intersect.point).add(intersect.face.normal);
-    }
-
-
 }
 
-// Objekte werden auf die Gartenfläche gesetzt, wenn es einen Linksmausklick gibt
+// Objekte werden auf die Gartenfläche gesetzt, wenn es einen Linksmausklick gibt.
 export function onPointerDown(event) {
-
+    console.log(event);
+    // Mauszeiger wird auf die 3D Fläche projekziert
     pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
     raycaster.setFromCamera(pointer, camera.getCamera());
     const intersects = raycaster.intersectObjects(objects, true);
 
     // Objekte in den Boden setzen
     const floorvec = new THREE.Vector3(0, 4, 0);
-
-    /*
-    if (deleteButtonClicked) {
-        intersectSavedArr.forEach(intersectelement => {
-            objects = objects.filter(obj => obj !== intersectelement);
-            scene.getScene().remove(intersectelement);
-        });
-        deleteButtonClicked = false;
-    }
-    */
-
-    /*
-        if (intersects.length > 0 && event.button === 0) {
-            const intersect = intersects[0];
-    
-            // Model auf Boden platzieren
-            let model_placed = new Model();
-            model_placed.setModelName(obj);
-    
-            if (intersects.length > 1) {
-    
-                objects.forEach(object => {
-                    intersects.forEach(intersect => {
-                        if (model_placed.getModelName() !== './models/empty.glb' && object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
-                            objects = objects.filter(obj => obj !== object);
-                            scene.getScene().remove(object);
-                        }
-    
-                        if (model_placed.getModelName() === './models/empty.glb' && object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
-                            let plantpopup = new PlantPopup();
-                            plantpopup.createPopup();
-                            document.getElementById('PlantPopupTitle').innerHTML = intersect.object.name;
-                            intersectSavedArr.push(object);
-                        }
-                    });
-                });
-            } else {
-                model_placed.getModel().load(model_placed.getModelName(), (gltf) => {
-                    let mesh_placed = gltf.scene;
-                    mesh_placed.position.copy(intersect.point).add(intersect.face.normal);
-                    mesh_placed.position.sub(floorvec);
-                    if (event.srcElement.id == "finishButton" || event.srcElement.id == "popupButton") {
-                        mesh_placed = null;
-                    }
-                    scene.getScene().add(mesh_placed);
-                    objects.push(mesh_placed);
-                });
-            }
-        }
-    
-        */
 
     if (intersects.length > 0 && event.button === 0) {
         const intersect = intersects[0];
@@ -241,17 +185,31 @@ export function onPointerDown(event) {
         let model_placed = new Model();
         model_placed.setModelName(obj);
 
-        model_placed.getModel().load(model_placed.getModelName(), (gltf) => {
-            let mesh_placed = gltf.scene;
-            mesh_placed.position.copy(intersect.point).add(intersect.face.normal);
-            mesh_placed.position.sub(floorvec);
-            if (event.srcElement.id == "finishButton" || event.srcElement.id == "popupButton") {
-                mesh_placed = null;
-            }
-            scene.getScene().add(mesh_placed);
-            objects.push(mesh_placed);
-        });
+        if (intersects.length > 1) {
 
+            objects.forEach(object => {
+                intersects.forEach(intersect => {
+                    if (object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
+                        objects = objects.filter(obj => obj !== object);
+                        scene.getScene().remove(object);
+                    }
+                });
+            });
+
+        } else {
+            
+            model_placed.getModel().load(model_placed.getModelName(), (gltf) => {
+                let mesh_placed = gltf.scene;
+                mesh_placed.position.copy(intersect.point).add(intersect.face.normal);
+                mesh_placed.position.sub(floorvec);
+
+                //Wenn man auf den Speichern- oder Hinzufüge-Button klickt, darf das Objekt nicht gesetzt werden.
+                if (event.srcElement.id == "garden") {
+                    scene.getScene().add(mesh_placed);
+                    objects.push(mesh_placed);
+                }
+            });
+        }
     }
 }
 
