@@ -100,8 +100,8 @@ function createGarden() {
     objects.push(ground.getPlane());
 
     // listeners
-    document.addEventListener('pointermove', onPointerMove);
-    document.addEventListener('pointerdown', onPointerDown);
+    // document.addEventListener('pointermove', onPointerMove);
+    // document.addEventListener('pointerdown', onPointerDown);
     window.addEventListener('resize', onWindowResize, false);
 
     animate();
@@ -129,7 +129,7 @@ export function getPositionedPlants() {
 }
 
 // Der Raycaster baut ein Mapping zwischen Mauszeiger und Position auf der Gartenfläche auf.
-function onPointerMove(event) {
+export function onPointerMove(event) {
     pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
     raycaster.setFromCamera(pointer, camera.getCamera());
     const intersects = raycaster.intersectObjects(objects, true);
@@ -174,7 +174,7 @@ function onPointerMove(event) {
 }
 
 // Objekte werden auf die Gartenfläche gesetzt, wenn es einen Linksmausklick gibt
-function onPointerDown(event) {
+export function onPointerDown(event) {
 
     pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
     raycaster.setFromCamera(pointer, camera.getCamera());

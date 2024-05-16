@@ -1,4 +1,4 @@
-import { createModel, createMesh, getPlantObjects, setObjects, pushObject, getPositionedPlants } from '../../main.js';
+import { createModel, createMesh, getPlantObjects, setObjects, pushObject, getPositionedPlants, onPointerMove, onPointerDown } from '../../main.js';
 import { Model } from './model.js';
 
 export class FinishButton {
@@ -28,6 +28,8 @@ export class FinishButton {
             this.style.background = '#b3847a';
         };
         this.finishButton.onclick = function () {
+            document.removeEventListener('pointermove', onPointerMove);
+            document.removeEventListener('pointerdown', onPointerDown);
             let model = new Model();
             model.setModelName('../../models/empty.glb');
             model.getModel().load(model.getModelName(), (gltf) => {
@@ -56,7 +58,7 @@ export class FinishButton {
                 })
             });
 
-            setObjects([]);
+          //  setObjects([]);
             getPositionedPlants();
             /*
             fetch('http://localhost:5000/getAllPositionedPlants')

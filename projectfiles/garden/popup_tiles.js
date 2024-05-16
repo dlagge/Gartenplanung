@@ -1,4 +1,4 @@
-import { createModel, createMesh } from '../../main.js';
+import { createModel, createMesh, onPointerMove, onPointerDown } from '../../main.js';
 import { Model } from './model.js';
 import { FinishButton } from './finish_button';
 
@@ -106,6 +106,9 @@ export class PopupTiles {
                         });
                         createModel('./models/' + plant_link + '.glb');
                     }, 1);
+                    document.addEventListener('pointermove', onPointerMove);
+                    document.addEventListener('pointerdown', onPointerDown);
+                    
                 }
             }
 
