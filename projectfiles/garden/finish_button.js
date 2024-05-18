@@ -1,5 +1,4 @@
-import { createModel, createMesh, getPlantObjects, setObjects, pushObject, getPositionedPlants, onPointerMove, onPointerDown } from '../../main.js';
-import { Model } from './model.js';
+import { getPlantObjects, getPositionedPlants, onPointerMove, onPointerDown, onPointerMoveDBObjects, onPointerDownDBObjects } from '../../main.js';
 
 export class FinishButton {
     createButton() {
@@ -28,17 +27,13 @@ export class FinishButton {
             this.style.background = '#b3847a';
         };
         this.finishButton.onclick = function () {
+
+            // event listeners
             document.removeEventListener('pointermove', onPointerMove);
             document.removeEventListener('pointerdown', onPointerDown);
-            /*
-            let model = new Model();
-            model.setModelName('../../models/empty.glb');
-            model.getModel().load(model.getModelName(), (gltf) => {
-                let mesh = gltf.scene;
-                createMesh(mesh);
-            });
-            createModel('./models/empty.glb');
-            */
+            document.addEventListener('pointermove', onPointerMoveDBObjects);
+            document.addEventListener('pointerdown', onPointerDownDBObjects);
+            
 
             document.getElementById('finishButton').remove();
 
@@ -60,27 +55,7 @@ export class FinishButton {
                 })
             });
 
-          //  setObjects([]);
             getPositionedPlants();
-            /*
-            fetch('http://localhost:5000/getAllPositionedPlants')
-                .then(response => response.json())
-                .then(data => seedPlants(data['data']));
-
-            function seedPlants(data) {*
-                data.forEach(function ({ plant_link, x_position, y_position, z_position }) {
-                    let model = new Model();
-                    model.setModelName('../../models/' + plant_link + '.glb');
-                    model.getModel().load(model.getModelName(), (gltf) => {
-                        let mesh = gltf.scene;
-                        mesh.position.set(x_position, y_position, z_position);
-                        createMesh(mesh);
-                       // pushObject(mesh);
-                    });
-                  //  createModel('./models/' + plant_link + '.glb');
-                });
-            }
-            */
         };
     }
 }

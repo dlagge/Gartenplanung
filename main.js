@@ -16,7 +16,9 @@ let selectorcolor = 0xb3847a;
 let ground_width = 150;
 let ground_length = 150;
 let camera, scene, renderer, ground, lights, mesh, raycaster, pointer, obj, plantpopup;
+let deleteButtonClicked = false;
 
+// Three Js Objekte, welche bereits gesetzt wurden (Daten aus Datenbank)
 let dbobjects = [];
 
 // Three Js Objekte, welche visuell dargestellt werden, wenn man sie setzt
@@ -64,6 +66,10 @@ export function setObjects(val) {
     objects = val;
 }
 
+export function getObjects() {
+    return objects;
+}
+
 export function pushObject(val) {
     objects.push(val);
 }
@@ -75,6 +81,10 @@ export function getPlantObjects() {
         }
     });
     return plantobjects;
+}
+
+export function getDBObjects() {
+    return dbobjects;
 }
 
 // Erstellt: Licht, Boden, Modelle
@@ -93,8 +103,14 @@ function createGarden() {
     );
 
     objects.push(ground.getPlane());
-    window.addEventListener('resize', onWindowResize, false);
     getPositionedPlants();
+
+
+    // event listeners
+    window.addEventListener('resize', onWindowResize, false);
+    document.addEventListener('pointermove', onPointerMoveDBObjects);
+    document.addEventListener('pointerdown', onPointerDownDBObjects);
+
     animate();
 }
 
@@ -115,6 +131,74 @@ export function getPositionedPlants() {
                 createMesh(mesh);
             });
         });
+        dbobjects.push(ground.getPlane());
+    }
+}
+
+// Pointer Move Funktion für die Endansicht
+// Der Raycaster baut ein Mapping zwischen Mauszeiger und Position auf der Gartenfläche auf, während man den Mauszeiger bewegt.
+export function onPointerMoveDBObjects(event) {
+
+    // Mauszeiger wird auf die 3D Fläche projekziert
+    pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
+    raycaster.setFromCamera(pointer, camera.getCamera());
+    const intersects = raycaster.intersectObjects(dbobjects, true);
+
+    if (intersects.length > 0 && !event.shiftKey) {
+
+        // Wenn man sich mit dem Mauszeiger oberhalb des Objekt befindet, wird er dunkel markiert.
+        if (intersects.length > 1) {
+            intersects.forEach(intersect => {
+                intersect.object.traverse((child) => {
+                    if (child.material && intersect.object.name !== '') {
+                        child.material.color.setHex(selectorcolor);
+                    }
+                });
+            });
+        }
+
+        /* 
+        Wenn man sich mit dem Mauszeiger nicht oberhalb eines Objektes befindet, soll es nicht dunkel markiert werden,
+        bzw. es soll weiss bleiben.
+        */
+        else {
+            dbobjects.forEach(obj => {
+                obj.traverse((child) => {
+                    if (child.material && obj.name !== '') {
+                        child.material.color.setHex(0xffffff);
+                    }
+                });
+            });
+        }
+    }
+}
+
+// Pointer Down Funktion für die Endansicht
+// Objekte werden auf die Gartenfläche gesetzt, wenn es einen Linksmausklick gibt.
+export function onPointerDownDBObjects(event) {
+
+    // Mauszeiger wird auf die 3D Fläche projekziert
+    pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
+    raycaster.setFromCamera(pointer, camera.getCamera());
+    const intersects = raycaster.intersectObjects(dbobjects, true);
+
+    // Objekte in den Boden setzen
+    const floorvec = new THREE.Vector3(0, 4, 0);
+
+    if (intersects.length > 0 && event.button === 0) {
+        const intersect = intersects[0];
+
+        // Model auf Boden platzieren
+        let model_placed = new Model();
+        model_placed.setModelName(obj);
+
+        if (intersects.length > 1) {
+            console.log(intersect);
+            // Wenn sich der Mauszeiger über einem anderen Objekt befindet, öffnet sich das Plant Pop-up
+            // ToDo: Anhand der Position des Objektes soll erkannt werden, um welches Objekt es sich in der DB handelt
+            // ToDo: Wenn man das Objekt gesetzt hat, sollen direkt alle DB Objekte geladen werden, so dass man das neu
+            // platzierte Objekt schon auswählen kann
+        }
     }
 }
 
@@ -169,7 +253,7 @@ export function onPointerMove(event) {
 
 // Objekte werden auf die Gartenfläche gesetzt, wenn es einen Linksmausklick gibt.
 export function onPointerDown(event) {
-    console.log(event);
+
     // Mauszeiger wird auf die 3D Fläche projekziert
     pointer.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
     raycaster.setFromCamera(pointer, camera.getCamera());
@@ -186,7 +270,7 @@ export function onPointerDown(event) {
         model_placed.setModelName(obj);
 
         if (intersects.length > 1) {
-
+            // Wenn sich der Mauszeiger über einem anderen Objekt befindet, wird das Objekt gelöscht
             objects.forEach(object => {
                 intersects.forEach(intersect => {
                     if (object.uuid == intersect.object.parent.uuid && object !== ground.getPlane()) {
@@ -197,7 +281,7 @@ export function onPointerDown(event) {
             });
 
         } else {
-            
+            // Wenn sich der Zeiger über dem Boden befindet, wird das Objekt platziert
             model_placed.getModel().load(model_placed.getModelName(), (gltf) => {
                 let mesh_placed = gltf.scene;
                 mesh_placed.position.copy(intersect.point).add(intersect.face.normal);

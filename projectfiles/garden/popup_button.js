@@ -1,5 +1,4 @@
-import { createModel, createMesh } from '../../main.js';
-import { Model } from './model.js';
+import { onPointerMoveDBObjects, onPointerDownDBObjects } from '../../main.js';
 import { PopupWindow } from './popup_window.js';
 
 export class PopupButton {
@@ -31,16 +30,8 @@ export class PopupButton {
             this.style.transform = 'rotate(0deg)';
         };
         this.popupButton.onclick = function () {
-            /*
-            let model = new Model();
-            model.setModelName('../../models/empty.glb');
-            model.getModel().load(model.getModelName(), (gltf) => {
-                let mesh = gltf.scene;
-                createMesh(mesh);
-            });
-            createModel('./models/empty.glb');
-            */
-
+            document.removeEventListener('pointermove', onPointerMoveDBObjects);
+            document.removeEventListener('pointerdown', onPointerDownDBObjects);
             let popup = new PopupWindow();
             popup.createPopup();
             document.getElementById('popupButton').remove();
