@@ -1,4 +1,4 @@
-import { getPlantObjects, getPositionedPlants, onPointerMove, onPointerDown, onPointerMoveDBObjects, onPointerDownDBObjects } from '../../main.js';
+import { getPlantObjects, getPositionedPlants, onPointerMove, onPointerDown, onPointerMoveDBObjects, onPointerDownDBObjects, loadingSpinner } from '../../main.js';
 
 export class FinishButton {
     createButton() {
@@ -33,7 +33,7 @@ export class FinishButton {
             document.removeEventListener('pointerdown', onPointerDown);
             document.addEventListener('pointermove', onPointerMoveDBObjects);
             document.addEventListener('pointerdown', onPointerDownDBObjects);
-            
+
 
             document.getElementById('finishButton').remove();
 
@@ -56,6 +56,9 @@ export class FinishButton {
             });
 
             getPositionedPlants();
+            location.reload(true);
         };
     }
+
+    
 }

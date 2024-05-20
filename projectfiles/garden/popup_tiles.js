@@ -106,7 +106,6 @@ export class PopupTiles {
                         });
                         createModel('./models/' + plant_link + '.glb');
                     }, 1);
-
                     document.addEventListener('pointermove', onPointerMove);
                     document.addEventListener('pointerdown', onPointerDown);
                 }

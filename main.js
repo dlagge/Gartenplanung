@@ -15,7 +15,7 @@ import { PlantPopup } from "./projectfiles/garden/plant_popup";
 let selectorcolor = 0xb3847a;
 let ground_width = 150;
 let ground_length = 150;
-let camera, scene, renderer, ground, lights, mesh, raycaster, pointer, obj, plantpopup;
+let camera, scene, renderer, ground, lights, mesh, raycaster, pointer, obj, plantpopup, loadingManager;
 let deleteButtonClicked = false;
 
 // Three Js Objekte, welche bereits gesetzt wurden (Daten aus Datenbank)
@@ -37,6 +37,8 @@ createGarden();
 
 // Erstellt: Kamera, Szene, Renderer, Bewegungskontroller
 function init() {
+    //loadingSpinner();
+    //document.getElementById('loadingSpinner').remove();
     camera = new Camera();
     scene = new Scene();
     renderer = new Renderer();
@@ -87,6 +89,28 @@ export function getDBObjects() {
     return dbobjects;
 }
 
+export function loadingSpinner() {
+    let loadingspinner = document.createElement('div');
+    loadingspinner.setAttribute("id", "loadingSpinner");
+    loadingspinner.style.border = '16px solid #ffffff';
+    loadingspinner.style.borderRadius = '50%';
+    loadingspinner.style.borderTop = '16px solid #b3847a';
+    loadingspinner.style.width = '120px';
+    loadingspinner.style.height = '120px';
+    loadingspinner.style.animation = 'spin 2s linear infinite';
+    loadingspinner.style.position = 'absolute';
+    loadingspinner.style.top = '50%';
+    loadingspinner.style.left = '50%';
+    loadingspinner.animate([
+        { transform: 'rotate(0deg)' },
+        { transform: 'rotate(360deg)' }
+    ], {
+        duration: 2000,
+        iterations: Infinity
+    });
+    document.body.appendChild(loadingspinner);
+}
+
 // Erstellt: Licht, Boden, Modelle
 function createGarden() {
     lights = new Lights();
@@ -118,7 +142,7 @@ function createGarden() {
 export function getPositionedPlants() {
     fetch('http://localhost:5000/getAllPositionedPlants')
         .then(response => response.json())
-        .then(data => seedPlants(data['data']));
+        .then(data => seedPlants(data['data']))
 
     function seedPlants(data) {
         data.forEach(function ({ plant_link, x_position, y_position, z_position }) {
@@ -146,14 +170,32 @@ export function onPointerMoveDBObjects(event) {
 
     if (intersects.length > 0 && !event.shiftKey) {
 
-        // Wenn man sich mit dem Mauszeiger oberhalb des Objekt befindet, wird er dunkel markiert.
+
         if (intersects.length > 1) {
+            dbobjects.forEach(obj => {
+                obj.traverse((child) => {
+                    if (child.material && obj.name !== '') {
+                        child.material.color.setHex(0xffffff);
+                    }
+                });
+            });
+
+            $('html,body').css('cursor', 'pointer');
+            let childarr = [];
+            // Wenn man sich mit dem Mauszeiger oberhalb des Objekt befindet, wird er dunkel markiert.
             intersects.forEach(intersect => {
                 intersect.object.traverse((child) => {
                     if (child.material && intersect.object.name !== '') {
-                        child.material.color.setHex(selectorcolor);
+                        childarr.push(child);
                     }
                 });
+            });
+            childarr.forEach(child => {
+                if (childarr[0].parent.position.x === child.parent.position.x && childarr[0].parent.position.y === child.parent.position.y) {
+                    child.material.color.setHex(selectorcolor);
+                } else {
+                    child.material.color.setHex(0xffffff);
+                }
             });
         }
 
@@ -162,6 +204,7 @@ export function onPointerMoveDBObjects(event) {
         bzw. es soll weiss bleiben.
         */
         else {
+            $('html,body').css('cursor', 'default');
             dbobjects.forEach(obj => {
                 obj.traverse((child) => {
                     if (child.material && obj.name !== '') {
@@ -182,9 +225,6 @@ export function onPointerDownDBObjects(event) {
     raycaster.setFromCamera(pointer, camera.getCamera());
     const intersects = raycaster.intersectObjects(dbobjects, true);
 
-    // Objekte in den Boden setzen
-    const floorvec = new THREE.Vector3(0, 4, 0);
-
     if (intersects.length > 0 && event.button === 0) {
         const intersect = intersects[0];
 
@@ -193,7 +233,7 @@ export function onPointerDownDBObjects(event) {
         model_placed.setModelName(obj);
 
         if (intersects.length > 1) {
-            console.log(intersect);
+
             // Wenn sich der Mauszeiger über einem anderen Objekt befindet, öffnet sich das Plant Pop-up
             // ToDo: Anhand der Position des Objektes soll erkannt werden, um welches Objekt es sich in der DB handelt
             // ToDo: Wenn man das Objekt gesetzt hat, sollen direkt alle DB Objekte geladen werden, so dass man das neu
@@ -226,12 +266,29 @@ export function onPointerMove(event) {
 
         // Wenn man sich mit dem Mauszeiger oberhalb des Objekt befindet, wird er dunkel markiert.
         if (intersects.length > 1) {
+            objects.forEach(obj => {
+                obj.traverse((child) => {
+                    if (child.material && obj.name !== '') {
+                        child.material.color.setHex(0xffffff);
+                    }
+                });
+            });
+            $('html,body').css('cursor', 'pointer');
+            let childarr = [];
+            // Wenn man sich mit dem Mauszeiger oberhalb des Objekt befindet, wird er dunkel markiert.
             intersects.forEach(intersect => {
                 intersect.object.traverse((child) => {
                     if (child.material && intersect.object.name !== '') {
-                        child.material.color.setHex(selectorcolor);
+                        childarr.push(child);
                     }
                 });
+            });
+            childarr.forEach(child => {
+                if (childarr[0].parent.position.x === child.parent.position.x && childarr[0].parent.position.y === child.parent.position.y) {
+                    child.material.color.setHex(selectorcolor);
+                } else {
+                    child.material.color.setHex(0xffffff);
+                }
             });
         }
 
@@ -240,6 +297,7 @@ export function onPointerMove(event) {
         bzw. es soll weiss bleiben.
         */
         else {
+            $('html,body').css('cursor', 'default');
             objects.forEach(obj => {
                 obj.traverse((child) => {
                     if (child.material && obj.name !== '') {
